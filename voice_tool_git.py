@@ -2148,6 +2148,111 @@ class Application(Frame):
 
             # T.delete('1.0', END)
 
+        elif user_choice == "Fax Configuration":
+            fax_config = """
+
+            MODEM PASSTHROUGH NSE
+            
+                SIP/H323
+                
+                voice service voip
+                modem passthrough nse codec g711ulaw
+                
+                            or
+                
+                dial-peer voice 1 voip
+                modem passthrough nse codec g711ulaw
+                
+                
+                SCCP 
+                
+                voice service voip
+                modem passthrough nse codec g711ulaw
+                
+                
+                MGCP
+                
+                mgcp modem passthrough voip mode nse
+                mgcp modem passthrough voip codec g711ulaw
+                
+            
+            FAX PASS-THROUGH (Protocol Base)
+            
+                SIP/H323
+                
+                voice service voip
+                fax protocol pass-through g711ulaw
+                
+                            or
+                
+                dial-peer voice 1 voip
+                fax protocol pass-through g711ulaw
+                
+                
+                MGCP
+                
+                Fax pass-through is NOT supported for MGCP
+                
+                
+                SCCP
+                
+                Fax pass-through is NOT supported for MGCP
+                
+                
+            T38 NSE-BASED
+            
+                SIP/H323
+                
+                voice service voip
+                fax protocol t38 nse ls-redundancy 0 hs-redundancy 0 fallback pass-through
+                
+                                                    or
+                                                    
+                dial-peer voice 1 voip
+                fax protocol t38 nse ls-redundancy 0 hs-redundancy 0 fallback pass-through
+                
+                
+                MGCP 
+                
+                no mgcp fax t38 inhibit (enabled by default)
+                
+                
+                SCCP
+                
+                voice service voip
+                fax protocol t38 nse ls-redundancy 0 hs-redundancy 0 fallback pass-through
+                
+                
+            T38 PROTOCOL-BASED       
+                
+                SIP/H323
+            
+                
+                voice service voip
+                fax protocol t38 version [0|3] ls-redundancy 0 hs-redundancy 0 fallback pass-through
+                
+                                                    or
+                                                    
+                dial-peer voice 1 voip
+                fax protocol t38 version [0|3] ls-redundancy 0 hs-redundancy 0 fallback pass-through
+                
+                
+                MGCP
+                
+                
+                mgcp package-capability fxr-package
+                mgcp default-package fxr-package
+                
+                
+                SCCP
+                
+                
+                SCCP does not support protocol-based T38
+                
+
+                    """
+            T.insert(END, fax_config)
+
 
 choices = ["SIP Trunk with CUCM", "Register SCCP Gateway in CUCM", "H323 Gateway (with CUCM)",
            "SIP CME", "SCCP CME",
@@ -2170,7 +2275,7 @@ choices = ["SIP Trunk with CUCM", "Register SCCP Gateway in CUCM", "H323 Gateway
            "CUE with CUCM",
            "CUE to Email Notification", "VRF with SIP/H323", "How to collect debugs the right way", "MWI with QSIG",
            "Upgrade DSP Firmware", "Reset DSP", "Modem Passthrough with SIP, SCCP and MGCP Gateways",
-           "EEM Script - Automatic Packet Capture When IP SLA goes down", "Voiceview express"]
+           "EEM Script - Automatic Packet Capture When IP SLA goes down", "Voiceview express", "Fax Configuration"]
 
 #CREATE A VARIABLE FOR THE TKINTER APP
 
@@ -3583,5 +3688,4 @@ open_button.pack()
 root.title("GDP MS TAC TOOL")
 
 app.mainloop()
-
 
