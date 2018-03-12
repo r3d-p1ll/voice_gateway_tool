@@ -2254,6 +2254,244 @@ class Application(Frame):
             T.insert(END, fax_config)
 
 
+        elif user_choice == "Span port configuraiton on a switch":
+            span_port = """
+
+            SPAN PORT CONFIGURATION ON THE SWITCH (FOR COLLECTING PACKET CAPTURE FROM A PHONE)            
+             
+            conf t
+            monitor session 1 source interface g1/0/32 both            
+            monitor session 1 destination interface g5/0/41
+                                     
+            Disable with             
+                         
+            no monitor session 1 destination interface g5/0/41
+
+
+                    """
+            T.insert(END, span_port)
+
+
+        elif user_choice == "LPCOR Configuration":
+            lpcor_config = """
+
+            LPCOR CONFIGURATION
+
+            
+            sh run | sec aaa            
+            aaa new-model           
+            aaa authentication login h323 local            
+            aaa authorization exec h323 local            
+            aaa authorization network h323 local            
+            aaa accounting connection h323            
+            aaa session-id common            
+            gw-accounting aaa
+                                                 
+                                                                                     
+            username 1111 password 0 1111
+            username 2222 password 0 2222
+                         
+                         
+            voice lpcor enable            
+            voice lpcor custom            
+            group 10 PRI            
+            voice lpcor policy PRI            
+            service fac            
+            accept PRI fac                        
+             
+            
+            ** We need this config under "application" and  "package auth". Check if the files "enter_pin.au" and "enter_account.au" are on the flash ***
+            
+            application           
+            package auth            
+              param max-digit 5            
+              param max-retries 3            
+              param passwd-prompt flash:enter_pin.au            
+              param user-prompt flash:enter_account.au            
+              param abort-digit *            
+              param term-digit #            
+             
+            
+            *** Check for trunk config with lpcor assigned ***
+                       
+            trunk group PRI           
+            lpcor outgoing PRI
+            
+            
+            *** Make shure we have configured  "trunk-group PRI" under Serial interface and "trunkgroup PRI" under the dial-peer.***
+                        
+            interface Serial0/0/0:23            
+            no ip address            
+            encapsulation hdlc            
+            isdn switch-type primary-ni            
+            isdn protocol-emulate network            
+            isdn incoming-voice voice            
+            trunk-group PRI            
+            no cdp tlv app
+            
+            
+            dial-peer voice 9 pots            
+            trunkgroup PRI            
+            destination-pattern ^10$            
+            forward-digits all
+            
+            
+            *** Add the LPCOR configuration under the ephone profile *****
+                        
+            ephone  1            
+            lpcor type local            
+            lpcor incoming PRI            
+            description YU CIPC            
+            mac-address 507B.9DA2.F72D            
+            type CIPC            
+            button  1:1            
+                         
+            ** Add the LPCOR configuration under the voice register pool profile ***
+            
+                         
+            voice register pool  1            
+            lpcor type local            
+            lpcor incoming PRI            
+            busy-trigger-per-button 2            
+            id mac 009E.1EDE.A297            
+            type 7841            
+            number 1 dn 1            
+            number 2 dn 2            
+            dtmf-relay rtp-nte sip-notify            
+            username cusco password adg            
+            codec g711ulaw            
+            no vad
+ 
+ 
+                    """
+            T.insert(END, lpcor_config)
+
+
+        elif user_choice == "Extension Mobility for SIP and SCCP":
+            extension_mobility = """
+            
+            EXTENSION MOBILITY FOR SIP AND SCCP PHONES
+            
+
+            SIP EM 
+            
+            ip http server            
+            voice register global            
+              url authentication http://CME_IP/CCMCIP/authenticate.asp
+            
+                         
+            voice logout-profile 1            
+            user cisco password adj            
+            number 100
+            
+                                     
+            Even though the dn will not be assigned anywhere, it needs to be created. If the dn is missing, you'd still be able to log in the user profile, but the phone will not have a number.
+            
+            voice register dn  1            
+            number 100
+                                     
+            voice register pool  1           
+            logout-profile 1            
+            id mac F8A5.C59D.DB3C            
+            type 8851            
+            dtmf-relay rtp-nte            
+            codec g711ulaw            
+            no vad
+                                     
+            voice user-profile 1            
+            user cisco password adj            
+            number 101
+                                     
+            voice register dn  2            
+            number 101
+                                     
+            voice register global            
+            create profile
+            
+                                                  
+            SCCP EM
+                         
+            
+            ip http server
+                                     
+            telephony-service            
+            authentication credential test test            
+            max-ephones 10            
+            max-dn 10            
+            ip source-address 10.63.105.36 port 2000            
+            service phone webAccess 0            
+            url authentication http://CME_IP/CCMCIP/authenticate.asp test test
+                                     
+            voice logout-profile 2            
+            user cisco password cisco            
+            number 200
+                                     
+            ephone-dn  1            
+            number 200
+                                     
+            ephone  1            
+            mac-address 94D4.692A.220C            
+            type 7965           
+            logout-profile 2
+                                   
+            voice user-profile 2           
+            user panda password adj           
+            number 201
+                                     
+            ephone-dn  2            
+            number 201
+                                    
+            telephony-service           
+            create cnf-files
+            
+                                                  
+            A user can log into a SIP and SCCP phone as long as the number for the user-profile has voice register dn an ephone-dn configured.                                    
+            The SIP config can work without the SCCP config and vice versa.
+                                    
+                                     
+            Admin guide for EM- https://www.cisco.com/c/en/us/td/docs/voice_ip_comm/cucme/admin/configuration/manual/cmeadm/cmemobl.html    
+
+
+                    """
+            T.insert(END, extension_mobility)
+
+
+        elif user_choice == "Access List on a Switch for SRST":
+            access_list_srst = """
+
+            CONFIGURING AN ACCESS LIST ON A SWITCH FOR TESTING OUT SRST FOR SINGLE OR MULTIPLE PHONES            
+
+            10.56.1.1 - Phone
+            10.51.17.100 - CUCM         
+            10.51.17.101 - CUCM 2
+            
+            130 is the phone's voice vlan
+            
+            ----                        
+            
+            ip access-list extended SRST            
+            permit ip host 10.56.1.1 host 10.51.17.100            
+            permit ip host 10.56.1.1 host 10.51.17.101                         
+            
+            permit ip host 10.51.17.100 host 10.56.1.1            
+            permit ip host 10.51.17.101 host 10.56.1.1
+                                     
+            vlan access-map block 10            
+            match ip address SRST           
+            action drop
+                                     
+            vlan access-map block 20            
+            action forward
+                                     
+            vlan filter block vlan-list 130
+                                     
+            ----
+                                     
+
+
+                    """
+            T.insert(END, access_list_srst)
+
 choices = ["SIP Trunk with CUCM", "Register SCCP Gateway in CUCM", "H323 Gateway (with CUCM)",
            "SIP CME", "SCCP CME",
            "Gatekeeper Configuration",
@@ -2275,7 +2513,9 @@ choices = ["SIP Trunk with CUCM", "Register SCCP Gateway in CUCM", "H323 Gateway
            "CUE with CUCM",
            "CUE to Email Notification", "VRF with SIP/H323", "How to collect debugs the right way", "MWI with QSIG",
            "Upgrade DSP Firmware", "Reset DSP", "Modem Passthrough with SIP, SCCP and MGCP Gateways",
-           "EEM Script - Automatic Packet Capture When IP SLA goes down", "Voiceview express", "Fax Configuration"]
+           "EEM Script - Automatic Packet Capture When IP SLA goes down", "Voiceview express", "Fax Configuration",
+           "Span port configuration on a switch", "LPCOR configuration", "Extension Mobility for SIP anD SCCP",
+           "Access List on a Switch for SRST"]
 
 #CREATE A VARIABLE FOR THE TKINTER APP
 
@@ -2315,7 +2555,8 @@ choices_2 = ["Show Active Calls", "Show/Debug commands for troubleshooting DSP",
              "Check Dial-Peer match", "Show/Debug for DSP on ISR 2900/3900", "Debug commands for H323",
              "Show/Debug commads for SIP", "Show/Debug commands for SCCP", "Troubleshooting ATA 186",
              "Check if there's a device plugged into an analog port", "Debugs for troubleshooting DTMF",
-             "CUE traces for voicemail to email (SMTP)", "CUE traces for backup failure", "Debug for SIP Trunk registration with Telco"]
+             "CUE traces for voicemail to email (SMTP)", "CUE traces for backup failure", "Debug for SIP Trunk registration with Telco",
+             "Debugs for Extension Mobility"]
 
 
 def select_2():
@@ -2792,6 +3033,20 @@ def select_2():
 
         """
         T.insert(END, debug_sip_trunk)
+
+
+    elif user_choice_2 == "Debugs for Extension Mobility":
+        debug_ext_mobility = """
+
+        DEBUGS FOR EXTENSION MOBILITY ISSUES
+
+        Deb ip http all
+        Deb voice em-profile
+
+
+        """
+        T.insert(END, debug_ext_mobility)
+
 
 
 
@@ -3469,7 +3724,7 @@ q850_button.pack()
 var_4 = tkinter.StringVar(root)
 var_4.set("Call Flows and Signaling")
 
-choices_4 = ["H323 to ISDN (Slow Start)", "SIP to ISDN (Delayed Offer)", "SIP to ISDN (Early Offer)",
+choices_4 = ["H323 to ISDN (Slow Start)", "H323 Fast Start", "SIP to ISDN (Delayed Offer)", "SIP to ISDN (Early Offer)",
              "MGCP to ISDN"]
 
 def call_flow():
@@ -3512,7 +3767,7 @@ def call_flow():
             
             Open Logical CHannel Request --->
             
-            <--- Open Logical CHannel ACK
+            <--- Open Logical Channel ACK
             
             Open Logical Channel ACK --->
             
@@ -3604,6 +3859,32 @@ def call_flow():
 
         """
         T.insert(END, MGCP_ISDN)
+
+
+    elif user_choice_4 == "H323 Fast Start":
+        H323_fast = """
+        
+        You would be able to see the "fastStart" element in both the Setup and the Connect message.
+        
+
+        GATEWAY --------------------------------------------------- CUCM 
+
+            Open Logical Channel (H245) --->    
+
+            Open Logical CHannel (H245) --->  
+                                                                
+            Setup --->
+            
+                                                                                                <--- Call Proceeding
+
+                                                                                                <--- Alerting
+
+                                                                                                <--- Connect
+
+
+        """
+        T.insert(END, H323_fast)
+
 
 call_flow()
 
