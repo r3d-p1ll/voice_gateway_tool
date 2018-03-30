@@ -2440,7 +2440,7 @@ class Application(Frame):
             create cnf-files
             
                                                   
-            A user can log into a SIP and SCCP phone as long as the number for the user-profile has voice register dn an ephone-dn configured.                                    
+            "A user can log into a SIP and SCCP phone as long as the number for the user-profile has voice register dn an ephone-dn configured.                                    
             The SIP config can work without the SCCP config and vice versa."
                                     
                                      
@@ -2509,7 +2509,7 @@ choices = ["SIP Trunk with CUCM", "Register SCCP Gateway in CUCM", "H323 Gateway
            "CUE to Email Notification", "VRF with SIP/H323", "How to collect debugs the right way", "MWI with QSIG",
            "Upgrade DSP Firmware", "Reset DSP", "Modem Passthrough with SIP, SCCP and MGCP Gateways",
            "EEM Script - Automatic Packet Capture When IP SLA goes down", "Voiceview express", "Fax Configuration",
-           "Span port configuration on a switch", "LPCOR Configuration", "Extension Mobility for SIP anD SCCP",
+           "Span port configuration on a switch", "LPCOR Configuration", "Extension Mobility for SIP and SCCP",
            "Access List on a Switch for SRST"]
 
 #CREATE A VARIABLE FOR THE TKINTER APP
