@@ -94,22 +94,22 @@ class Application(Frame):
 
             SIP TRUNK WITH CUCM
 
-            allow-connections h323 to sip
-            allow-connections sip to h323
-            allow-connections sip to sip 
-            sip
-            bind control source-interface Loopback0
-            bind media source-interface Loopback0
-
-            "You'd also need to add some sip dial-peers"
-
-            dial-peer voice 1 voip
-            destination pattern .T
-            session target 12.63.102.3
-            session protocol sipv2
-            dtmf-relay sip-notify rtp-nte
-            codec g711ulaw
-            no vad
+                allow-connections h323 to sip
+                allow-connections sip to h323
+                allow-connections sip to sip 
+                sip
+                bind control source-interface Loopback0
+                bind media source-interface Loopback0
+    
+                "You'd also need to add some sip dial-peers"
+    
+                dial-peer voice 1 voip
+                destination pattern .T
+                session target 12.63.102.3
+                session protocol sipv2
+                dtmf-relay sip-notify rtp-nte
+                codec g711ulaw
+                no vad
             
             
             """
@@ -120,23 +120,23 @@ class Application(Frame):
 
             CONFIG SCCP GATEWAY ON CUCM (CME CONFIG)
 
-            conf t 
-            sccp local GigabitEthernet0/0
-            sccp ccm 10.122.148.47 (the CUCM address) identifier 2 priority 1 version 7.0
-            sccp
-            sccp ccm group 2
-             bind interface GigabitEthernet0/0
-             associate ccm 2 priority 1
-            stcapp ccm-group 2
-            stcapp
-
-            dial-peer voice 7 pots
-            service stcapp 
-            port 0/2/0 
-
-            voice-port 0/2/0 
-            no shut 
-            caller-id enable 
+                conf t 
+                sccp local GigabitEthernet0/0
+                sccp ccm 10.122.148.47 (the CUCM address) identifier 2 priority 1 version 7.0
+                sccp
+                sccp ccm group 2
+                 bind interface GigabitEthernet0/0
+                 associate ccm 2 priority 1
+                stcapp ccm-group 2
+                stcapp
+    
+                dial-peer voice 7 pots
+                service stcapp 
+                port 0/2/0 
+    
+                voice-port 0/2/0 
+                no shut 
+                caller-id enable 
 
 
             """
@@ -147,34 +147,34 @@ class Application(Frame):
 
             CONFIGURE H323 ON CME 
 
-            conf t
-            voice service voip
-             allow-connections h323 to sip
-             allow-connections sip to h323
-             h323
-
-            interface gigabitEthernet 0/0
-            h323-gateway voip bind srcaddr 10.122.148.27  "(if more than 1 interface)"
-            h323-gateway voip interface  "(if more than 1 interface)"
-
-            dial-peer voice 5 voip
-            destination-pattern ......
-            session-target ipv4:......
-            voice class h323 1 
-            dtmf-relay h245-alphanumeric
-            codec g711ulaw 
-            no vad
-
-            "optional"
-            
-            voice service voip 
-            h323
-            h225 display-ie ccm-compatible 
-            exit
-            exit
-            voice class h323 1
-            call start slow/fast 
-            telephony-service ccm-compatible 
+                conf t
+                voice service voip
+                 allow-connections h323 to sip
+                 allow-connections sip to h323
+                 h323
+    
+                interface gigabitEthernet 0/0
+                h323-gateway voip bind srcaddr 10.122.148.27  "(if more than 1 interface)"
+                h323-gateway voip interface  "(if more than 1 interface)"
+    
+                dial-peer voice 5 voip
+                destination-pattern ......
+                session-target ipv4:......
+                voice class h323 1 
+                dtmf-relay h245-alphanumeric
+                codec g711ulaw 
+                no vad
+    
+                "optional"
+                
+                voice service voip 
+                h323
+                h225 display-ie ccm-compatible 
+                exit
+                exit
+                voice class h323 1
+                call start slow/fast 
+                telephony-service ccm-compatible 
             
             
 
@@ -186,33 +186,33 @@ class Application(Frame):
 
             CME CONFIG FOR SIP
             
-            voice service voip 
-            allow-connections h323 to sip
-            allow-connections sip to h323
-            allow-connections sip to sip 
-            sip
-            bind control source-interface Loopback0
-            bind media source-interface Loopback0
-            registrar server expires max 120 min 60   !!!
-            voice class codec 1 <optional>
-            codec preference 1 g711ulaw <optional>
-            codec preference 2 g729r8 <optional>
-            voice register global 
-            mode cme
-            source-address <Router's interface>.... port 5060
-            max-dn 10
-            max-pool 10
-            authenticate register
-            time-format 24
-            date-format D/M/Y
-            voice register dn 1
-            number 1000
-            voice register pool 1
-            id mac ......
-            type ....
-            number 1 dn 1
-            voice-class codec 1
-            username ... password ... 
+                voice service voip 
+                allow-connections h323 to sip
+                allow-connections sip to h323
+                allow-connections sip to sip 
+                sip
+                bind control source-interface Loopback0
+                bind media source-interface Loopback0
+                registrar server expires max 120 min 60   !!!
+                voice class codec 1 <optional>
+                codec preference 1 g711ulaw <optional>
+                codec preference 2 g729r8 <optional>
+                voice register global 
+                mode cme
+                source-address <Router's interface>.... port 5060
+                max-dn 10
+                max-pool 10
+                authenticate register
+                time-format 24
+                date-format D/M/Y
+                voice register dn 1
+                number 1000
+                voice register pool 1
+                id mac ......
+                type ....
+                number 1 dn 1
+                voice-class codec 1
+                username ... password ... 
 
 
             """
@@ -223,24 +223,24 @@ class Application(Frame):
 
             CME CONFIG - SCCP
 
-            telephony-service
-            no auto-reg-ephone 
-            load 7912 <Firmware filename>
-            max-ephones 10 
-            max-dn 10  
-            ip source-address <Router's interface>.... port 2000   - "Which is going to be the CME address and port (loopback address is better)"
-            auto assign 1 to 10  "(extra command for phones to be assigned automatically - can be security risk)"
-            cnf-file perphone
-            create cnf-files version-stamp 7960 sep 27 2006  
-
-            conf t
-            ephone-dn 1 dual-line
-            number 1000 
-            
-            ephone 1
-            type 7975
-            mac-address ....
-            button 1:1 
+                telephony-service
+                no auto-reg-ephone 
+                load 7912 <Firmware filename>
+                max-ephones 10 
+                max-dn 10  
+                ip source-address <Router's interface>.... port 2000   - "Which is going to be the CME address and port (loopback address is better)"
+                auto assign 1 to 10  "(extra command for phones to be assigned automatically - can be security risk)"
+                cnf-file perphone
+                create cnf-files version-stamp 7960 sep 27 2006  
+    
+                conf t
+                ephone-dn 1 dual-line
+                number 1000 
+                
+                ephone 1
+                type 7975
+                mac-address ....
+                button 1:1 
 
 
             """
@@ -252,32 +252,32 @@ class Application(Frame):
 
             BASIC GATEKEEPER CONFIG - UNICAST, MULTICAST 
             
-            "On GW side"
-
-            conf t  
-            voice service voip
-            allow-connections h323 to h323
-            allow-connections h323 to sip
-            allow-connections sip to h323
-
-            interface gigabitEthernet 0/0
-            ip address .... ....
-            h323-gateway voip interface
-            h323-gateway voip id gk1 ipaddr ;....
-            h323-gateway voip h323-id gw1 
-
-            interface gigabitEthernet 0/0
-            ip address .... ....
-            h323-gateway voip interface
-            h323-gateway voip id gk1 multicast 
-            h323-gateway voip h323-id gw1 
-
-            "On GK side"
-            
-            conf t
-            gatekeeper 
-            zone local <name> <domain name> 10.122.148.20 
-            no shut 
+                "On GW side"
+    
+                conf t  
+                voice service voip
+                allow-connections h323 to h323
+                allow-connections h323 to sip
+                allow-connections sip to h323
+    
+                interface gigabitEthernet 0/0
+                ip address .... ....
+                h323-gateway voip interface
+                h323-gateway voip id gk1 ipaddr ;....
+                h323-gateway voip h323-id gw1 
+    
+                interface gigabitEthernet 0/0
+                ip address .... ....
+                h323-gateway voip interface
+                h323-gateway voip id gk1 multicast 
+                h323-gateway voip h323-id gw1 
+    
+                "On GK side"
+                
+                conf t
+                gatekeeper 
+                zone local <name> <domain name> 10.122.148.20 
+                no shut 
 
 
             """
@@ -288,12 +288,12 @@ class Application(Frame):
 
             EMBEDDED-PACKET-CAPTURE
 
-            MS-2901#monitor capture buffer capture-buff size 4000 max-size 1500 linear
-            MS-2901#monitor capture point ip cef capture-pt gigabitEthernet 0/1 both
-            MS-2901#monitor capture point associate capture-pt capture-buff
-            MS-2901#monitor capture point start all
-            MS-2901#monitor capture point stop all
-            MS-2901#monitor capture buffer capture-buff export tftp://10.137.8.185/capture.pcap
+                MS-2901#monitor capture buffer capture-buff size 4000 max-size 1500 linear
+                MS-2901#monitor capture point ip cef capture-pt gigabitEthernet 0/1 both
+                MS-2901#monitor capture point associate capture-pt capture-buff
+                MS-2901#monitor capture point start all
+                MS-2901#monitor capture point stop all
+                MS-2901#monitor capture buffer capture-buff export tftp://10.137.8.185/capture.pcap
 
 
             """
@@ -304,18 +304,18 @@ class Application(Frame):
 
             PACKET Capture
 
-            ip traffic-export profile capture mode capture
-            bidirectional
-
-            interface gigabitEthernet 0/0
-            ip traffic-export apply capture
-            exit
-            traffic-export interface gigabitethernet 0/0 start 
-            show ip traffic-export 
-            traffic-export interface gigabitethernet 0/0 stop 
-            traffic-export interface gigabitethernet 0/0 copy [flash:filename.cap | ftp://user:pass@10.1.1.1filename.cap]
-            dir flash:/CAPTURE1.CAP
-            #copy flash0:/CAPTURE1.CAP tftp:
+                ip traffic-export profile capture mode capture
+                bidirectional
+    
+                interface gigabitEthernet 0/0
+                ip traffic-export apply capture
+                exit
+                traffic-export interface gigabitethernet 0/0 start 
+                show ip traffic-export 
+                traffic-export interface gigabitethernet 0/0 stop 
+                traffic-export interface gigabitethernet 0/0 copy [flash:filename.cap | ftp://user:pass@10.1.1.1filename.cap]
+                dir flash:/CAPTURE1.CAP
+                #copy flash0:/CAPTURE1.CAP tftp:
 
 
             """
@@ -326,20 +326,20 @@ class Application(Frame):
 
             COLLECT A PACKET CAPTURE ON A PROCESSOR LEVEL 
 
-            conf t
-            ip access-list extended CAP-FILTER
-            permit ip any any
-            exit
-            exit
-
-            monitor capture buffer CAP-BUF size 10240 max-size 1514
-            monitor capture buffer CAP-BUF filter access-list CAP-FILTER
-            monitor capture point ip process-switched CAP-POINT both
-            monitor capture point associate CAP-POINT CAP-BUF
-
-            monitor capture point start CAP-POINT
-            monitor capture point stop CAP-POINT
-            monitor capture buffer CAP-BUF export flash:BUF.pcap
+                conf t
+                ip access-list extended CAP-FILTER
+                permit ip any any
+                exit
+                exit
+    
+                monitor capture buffer CAP-BUF size 10240 max-size 1514
+                monitor capture buffer CAP-BUF filter access-list CAP-FILTER
+                monitor capture point ip process-switched CAP-POINT both
+                monitor capture point associate CAP-POINT CAP-BUF
+    
+                monitor capture point start CAP-POINT
+                monitor capture point stop CAP-POINT
+                monitor capture buffer CAP-BUF export flash:BUF.pcap
 
 
             """
@@ -350,34 +350,34 @@ class Application(Frame):
 
             FOR IOS PRIOR TO 15.2(2)T1
 
-            voice hpi capture buffer 100000
-            voice hpi capture destination flash:pcm.dat  - "(On some IOS versions the PCM capture will start immediately after configuring this command)"
-
-            test voice port 0/0/0:23.1 pcm-dump cap 7 duration 255
-
-            TO STOP THE CAPTURE
-
-            no voice hpi capture destination flash:pcm.dat
-            no voice hpi capture buffer 100000
-
-
-            FOR IOS 15.2(2)T1 AND LATER
-
-            voice pcm capture buffer 200000 
-            voice pcm capture destination flash:
-
-            test voice port 0/0/0:23.1 pcm-dump caplog fff 
-
-
-            OR INSTEAD OF COLLECTING ON A PORT, YOU CAN USE A DIAL-PEER
-
-            dial-peer voice x voip/pots
-             pcm-dump caplog fff duration xxx
-
-            TO STOP THE PCM CAPTURE
-
-            no voice pcm capture buffer 200000
-            no voice pcm capture destination flash:
+                voice hpi capture buffer 100000
+                voice hpi capture destination flash:pcm.dat  - "(On some IOS versions the PCM capture will start immediately after configuring this command)"
+    
+                test voice port 0/0/0:23.1 pcm-dump cap 7 duration 255
+    
+                TO STOP THE CAPTURE
+    
+                no voice hpi capture destination flash:pcm.dat
+                no voice hpi capture buffer 100000
+    
+    
+                FOR IOS 15.2(2)T1 AND LATER
+    
+                voice pcm capture buffer 200000 
+                voice pcm capture destination flash:
+    
+                test voice port 0/0/0:23.1 pcm-dump caplog fff 
+    
+    
+                OR INSTEAD OF COLLECTING ON A PORT, YOU CAN USE A DIAL-PEER
+    
+                dial-peer voice x voip/pots
+                 pcm-dump caplog fff duration xxx
+    
+                TO STOP THE PCM CAPTURE
+    
+                no voice pcm capture buffer 200000
+                no voice pcm capture destination flash:
 
 
             """
@@ -388,12 +388,12 @@ class Application(Frame):
 
             HOW TO COLLECT A TRIGGERED PCM CAPTURE
 
-            "Trigger the PCM Capture when the DTMF key *** on a cisco registered phone. ### is used to stop the capture. (doesn't work always)"
-            
-            voice pcm capture buffer 200000
-            voice pcm capture destination tftp://x.x.x.x/ or flash:
-            voice pcm capture on-demand trigger
-            voice pcm capture user-trigger-string *** ### stream 7 duration 0
+                "Trigger the PCM Capture when the DTMF key *** on a cisco registered phone. ### is used to stop the capture. (doesn't work always)"
+                
+                voice pcm capture buffer 200000
+                voice pcm capture destination tftp://x.x.x.x/ or flash:
+                voice pcm capture on-demand trigger
+                voice pcm capture user-trigger-string *** ### stream 7 duration 0
 
 
             """
@@ -405,23 +405,23 @@ class Application(Frame):
 
             ISDN CONFIGURATION
 
-            conf t
-            card type {t1 | e1} 0 0
-            network-clock-participate wic 0   - "(Tells the router which module will participate in the clocking)"
-            network-clock-select 1 (t1 | e1) <controller slot numb>  - "Configure this only when the Telco provides the clocking to our end.)"
-            controller (t1 | e1) 
-            clock source (line | internal) -  "(Line - when the Telco provides the clocking to our end; Internal - when we provide the clocking to the other end)"
-            linecode (ami | b8zs)  -  "(For most part already configured to b8zs)"
-            framing (esf | sf)   -  "(For most part already configured  to esf)"
-            isdn switch-type primary-ni
-            isdn bchan-number-order descending  - "(Change the B channel order  (default is descending))"
-            controller t1 0/0/0 
-            pri-group timeslots 1-24  
-
-            conf t 
-            serial 0/0/0:23
-            isdn protocol emulate user  -  "(When the Telco provides the clocking to us. Configure "network" when we provide clocking.)"
-            isdn busy b_channel <number>  -  "(To busy out random channels)"
+                conf t
+                card type {t1 | e1} 0 0
+                network-clock-participate wic 0   - "(Tells the router which module will participate in the clocking)"
+                network-clock-select 1 (t1 | e1) <controller slot numb>  - "Configure this only when the Telco provides the clocking to our end.)"
+                controller (t1 | e1) 
+                clock source (line | internal) -  "(Line - when the Telco provides the clocking to our end; Internal - when we provide the clocking to the other end)"
+                linecode (ami | b8zs)  -  "(For most part already configured to b8zs)"
+                framing (esf | sf)   -  "(For most part already configured  to esf)"
+                isdn switch-type primary-ni
+                isdn bchan-number-order descending  - "(Change the B channel order  (default is descending))"
+                controller t1 0/0/0 
+                pri-group timeslots 1-24  
+    
+                conf t 
+                serial 0/0/0:23
+                isdn protocol emulate user  -  "(When the Telco provides the clocking to us. Configure "network" when we provide clocking.)"
+                isdn busy b_channel <number>  -  "(To busy out random channels)"
 
 
             """
@@ -432,37 +432,37 @@ class Application(Frame):
 
             MGCP CONFIGURATION - E1 
 
-            mgcp call-agent 10.122.148.47 service-type mgcp version 0.1
-            mgcp bind control source-interface gigabitEthernet 0/0
-            mgcp bind media source-interface gigabitEthernet 0/0
-
-            CCM config for MGCP 
-
-            ccm-manager music-on-hold
-            ccm-manager fallback-mgcp
-            ccm-manager mgcp
-            no ccm-manager fax protocol cisco
-            ccm-manager config server 10.122.148.47
-            ccm-manager redundant-host <secondary CUCM IP> <Third CUCM IP>
-            ccm-manager config
-
-            "Controller config for MGCP"
-
-            conf t
-            controller e1 0/0/0
-            framing crc4 
-            linecode ami
-            pri-group timeslots 1-31 service mgcp 
-
-            interface Serial0/0/0:15
-             no ip address
-             encapsulation hdlc
-             isdn switch-type primary-ni
-             isdn incoming-voice voice
-             isdn bind-l3 ccm-manager  - "(For backhaul)"   
-             isdn map address 99261111 plan isdn type national
-             isdn bchan-number-order ascending
-             no cdp enable
+                mgcp call-agent 10.122.148.47 service-type mgcp version 0.1
+                mgcp bind control source-interface gigabitEthernet 0/0
+                mgcp bind media source-interface gigabitEthernet 0/0
+    
+                CCM config for MGCP 
+    
+                ccm-manager music-on-hold
+                ccm-manager fallback-mgcp
+                ccm-manager mgcp
+                no ccm-manager fax protocol cisco
+                ccm-manager config server 10.122.148.47
+                ccm-manager redundant-host <secondary CUCM IP> <Third CUCM IP>
+                ccm-manager config
+    
+                "Controller config for MGCP"
+    
+                conf t
+                controller e1 0/0/0
+                framing crc4 
+                linecode ami
+                pri-group timeslots 1-31 service mgcp 
+    
+                interface Serial0/0/0:15
+                 no ip address
+                 encapsulation hdlc
+                 isdn switch-type primary-ni
+                 isdn incoming-voice voice
+                 isdn bind-l3 ccm-manager  - "(For backhaul)"   
+                 isdn map address 99261111 plan isdn type national
+                 isdn bchan-number-order ascending
+                 no cdp enable
 
 
              """
@@ -473,15 +473,15 @@ class Application(Frame):
 
             CAS CONFIGURATION
             
-            "No serial interface needed"
-
-            controller (t1 | e1) <controller slot num>
-            clock source (line | internal)
-            linecode
-            framing
-            ds0-group 1 timeslots 1-3, 4-32 type ? 
-            shut 
-            no shut  
+                "No serial interface needed"
+    
+                controller (t1 | e1) <controller slot num>
+                clock source (line | internal)
+                linecode
+                framing
+                ds0-group 1 timeslots 1-3, 4-32 type ? 
+                shut 
+                no shut  
 
 
             """
@@ -492,21 +492,21 @@ class Application(Frame):
 
             PRI/ISDN SHUTDOWN OR MANY ERRORS BUG 
 
-            https://bst.cloudapps.cisco.com/bugsearch/bug/CSCua50697/?referring_site=bugquickviewredir
-
-            Workaround 1: Reload the router with the T1 cable plugged in.
-
-            Workaround 2:
-            Step 1) Upgrade to a fixed-in Cisco IOS version.
-            Step 2) Issue the following commands (hidden, so tab complete will not work):
-
-            enable
-            config t
-            controller ! ( example: controller t1 0/0/0 )
-            hwic_t1e1 equalize
-
-            Step 3) Shut/no shut the T1 controller, or reload the router to allow the CLI to
-            take effect.
+                https://bst.cloudapps.cisco.com/bugsearch/bug/CSCua50697/?referring_site=bugquickviewredir
+    
+                Workaround 1: Reload the router with the T1 cable plugged in.
+    
+                Workaround 2:
+                Step 1) Upgrade to a fixed-in Cisco IOS version.
+                Step 2) Issue the following commands (hidden, so tab complete will not work):
+    
+                enable
+                config t
+                controller ! ( example: controller t1 0/0/0 )
+                hwic_t1e1 equalize
+    
+                Step 3) Shut/no shut the T1 controller, or reload the router to allow the CLI to
+                take effect.
 
 
             """
@@ -517,31 +517,31 @@ class Application(Frame):
 
             ENABLE CME GUI
 
-            archive tar /xtract tftp://0.0.0.0/ggg.tar flash:  -  "(Copy and extract from TFTP (used for the GUI installation))"
-
-            conf t
-
-            ip http server  -  "(Enables http functionality on Cisco Router, uses port 80)"
-            ip http authentication local  -  "(Enables local authentication)"
-            no ip http secure-server  -  "(Disables https functionality)"
-            ip http path flash:/abc  -  "(Look for HTML files in this [abc] directory)"
-            
-            "It doesn't matter whether you copy the HTML files into the flash root directory or in a folder, 
-            but if you create a folder you can manage HTML files easily, that's the only advantage"
-
-            file privilege 0 - default is 15  -  "(Specifies the file privilege level for the files. The level argument must be a number from 0 to 15. Users with privilege level equal to greater than the file privilege level can access the files under the file system.)"
-
-            telephony-service
-            web admin system name name1 password pass1  -  "(You can not set privilege level under Telephony-service for users)"
-            dn-webedit  -  "(By default disabled (you can not add extensions). You will see notification message in your browser window: "add extension number through web is disabled")"
-            time-webedit   -  "(By default disabled you can not change the time. You will see notification message in your browser window: "system time change time through web is not allowed")"
-
-            http://192.168.1.199/ccme.html
-
-            Conf t
-            telephony-service
-            service phone webAccess 0
-            create cnf-files
+                archive tar /xtract tftp://0.0.0.0/ggg.tar flash:  -  "(Copy and extract from TFTP (used for the GUI installation))"
+    
+                conf t
+    
+                ip http server  -  "(Enables http functionality on Cisco Router, uses port 80)"
+                ip http authentication local  -  "(Enables local authentication)"
+                no ip http secure-server  -  "(Disables https functionality)"
+                ip http path flash:/abc  -  "(Look for HTML files in this [abc] directory)"
+                
+                "It doesn't matter whether you copy the HTML files into the flash root directory or in a folder, 
+                but if you create a folder you can manage HTML files easily, that's the only advantage"
+    
+                file privilege 0 - default is 15  -  "(Specifies the file privilege level for the files. The level argument must be a number from 0 to 15. Users with privilege level equal to greater than the file privilege level can access the files under the file system.)"
+    
+                telephony-service
+                web admin system name name1 password pass1  -  "(You can not set privilege level under Telephony-service for users)"
+                dn-webedit  -  "(By default disabled (you can not add extensions). You will see notification message in your browser window: "add extension number through web is disabled")"
+                time-webedit   -  "(By default disabled you can not change the time. You will see notification message in your browser window: "system time change time through web is not allowed")"
+    
+                http://192.168.1.199/ccme.html
+    
+                Conf t
+                telephony-service
+                service phone webAccess 0
+                create cnf-files
 
 
             """
@@ -552,22 +552,22 @@ class Application(Frame):
 
             CUE GUI 
             
-            enable
-            configure terminal
-            ip http server
-            ip http path flash:
-            ip http authentication { aaa | enable | local | tacacs }
-            exit 
-
-            "Enabling GUI Access for the System Administrator"
-
-            enable
-            configure terminal
-            telephony-service
-            web admin system name username { password string | secret { 0 | 5 } string }
-            dn-webedit
-            time-webedit
-            end
+                enable
+                configure terminal
+                ip http server
+                ip http path flash:
+                ip http authentication { aaa | enable | local | tacacs }
+                exit 
+    
+                "Enabling GUI Access for the System Administrator"
+    
+                enable
+                configure terminal
+                telephony-service
+                web admin system name username { password string | secret { 0 | 5 } string }
+                dn-webedit
+                time-webedit
+                end
 
 
             """
@@ -578,65 +578,65 @@ class Application(Frame):
 
             EXAMPLE DPSFARM CONFIGURATION ON A VOICE GATEWAY 
 
-            voice-card 0
-            dsp services dspfarm
-            exit
-            
-            sccp local gigabitEthernet 0/0
-            sccp ccm <Router's address> identifier 1 version 7.0+
-            sccp ccm group 1
-            bind interface gigabitEthernet 0/0
-            exit
-            
-            sccp
-            dspfarm profile 1 transcode
-            maximum sessions 10
-            associate application sccp
-            exit
-            
-            sccp ccm group 1
-            associate ccm 1 priority 1
-            associate profile 1 register ASDFGHJKL
-            exit
-            
-            telephony-service
-            sdspfarm units 1
-            sdspfarm transcode sessions 10
-            sdspfarm tag 1 ASDFGHJKL
-            exit
-            
-            dspfarm profile 1 transcode
-            no shut
-            exit
-            no sccp
-            sccp
-            
-            
-            "This is how to verify if the DSPFARM is successfully created and registered"
-            
-            
-            show sccp
-            SCCP Admin State: UP
-            Gateway Local Interface: GigabitEthernet0/0
-                    IPv4 Address: 10.122.148.27
-                    Port Number: 2000
-            IP Precedence: 5
-            User Masked Codec list: None
-            Call Manager: 10.122.148.27, Port Number: 2000
-                            Priority: N/A, Version: 7.0, Identifier: 1
-                            Trustpoint: N/A
-
-            Transcoding Oper State: ACTIVE - Cause Code: NONE
-            Active Call Manager: 10.122.148.27, Port Number: 2000
-            TCP Link Status: CONNECTED, Profile Identifier: 1
-            Reported Max Streams: 20, Reported Max OOS Streams: 0
-            Supported Codec: g722r64, Maximum Packetization Period: 30
-            Supported Codec: g711ulaw, Maximum Packetization Period: 30
-            Supported Codec: g711alaw, Maximum Packetization Period: 30
-            Supported Codec: g729ar8, Maximum Packetization Period: 60
-            Supported Codec: rfc2833 dtmf, Maximum Packetization Period: 30
-            Supported Codec: rfc2833 pass-thru, Maximum Packetization Period: 30
-            Supported Codec: inband-dtmf to rfc2833 conversion, Maximum Packetization Period: 30
+                voice-card 0
+                dsp services dspfarm
+                exit
+                
+                sccp local gigabitEthernet 0/0
+                sccp ccm <Router's address> identifier 1 version 7.0+
+                sccp ccm group 1
+                bind interface gigabitEthernet 0/0
+                exit
+                
+                sccp
+                dspfarm profile 1 transcode
+                maximum sessions 10
+                associate application sccp
+                exit
+                
+                sccp ccm group 1
+                associate ccm 1 priority 1
+                associate profile 1 register ASDFGHJKL
+                exit
+                
+                telephony-service
+                sdspfarm units 1
+                sdspfarm transcode sessions 10
+                sdspfarm tag 1 ASDFGHJKL
+                exit
+                
+                dspfarm profile 1 transcode
+                no shut
+                exit
+                no sccp
+                sccp
+                
+                
+                "This is how to verify if the DSPFARM is successfully created and registered"
+                
+                
+                show sccp
+                SCCP Admin State: UP
+                Gateway Local Interface: GigabitEthernet0/0
+                        IPv4 Address: 10.122.148.27
+                        Port Number: 2000
+                IP Precedence: 5
+                User Masked Codec list: None
+                Call Manager: 10.122.148.27, Port Number: 2000
+                                Priority: N/A, Version: 7.0, Identifier: 1
+                                Trustpoint: N/A
+    
+                Transcoding Oper State: ACTIVE - Cause Code: NONE
+                Active Call Manager: 10.122.148.27, Port Number: 2000
+                TCP Link Status: CONNECTED, Profile Identifier: 1
+                Reported Max Streams: 20, Reported Max OOS Streams: 0
+                Supported Codec: g722r64, Maximum Packetization Period: 30
+                Supported Codec: g711ulaw, Maximum Packetization Period: 30
+                Supported Codec: g711alaw, Maximum Packetization Period: 30
+                Supported Codec: g729ar8, Maximum Packetization Period: 60
+                Supported Codec: rfc2833 dtmf, Maximum Packetization Period: 30
+                Supported Codec: rfc2833 pass-thru, Maximum Packetization Period: 30
+                Supported Codec: inband-dtmf to rfc2833 conversion, Maximum Packetization Period: 30
 
 
             """
@@ -648,79 +648,79 @@ class Application(Frame):
             EXAMPLE CONFIGURATION FOR CONFERENCING - AD HOC AND MEET ME 
             
             
-            "Not everything included here is needed for the conferencing to work"
-
-
-            voice-card 0
-            dsp services dspfarm
-            exit
-            
-            sccp local gigabitEthernet 0/0  -  "(Specifies the local SCCP Interface)"
-            sccp ccm 192.168.10.1 identifier 100 version 7.0+  -  "(Configure the IP address of the call-agent to register the SCCP)"
-            sccp
-
-            sccp ccm group 1
-            associate ccm 100 priority 1
-            associate profile 1 register confprof1
-            bind interface gigabitEthernet 0/0
-            exit
-            
-            dspfarm profile 1 conference
-             codec g711ulaw
-             maximum conference-participants 8
-             maximum sessions 8
-             associate application sccp
-             shutdown
-             no shut
-             
-             
-            telephony-service
-            conference hardware
-            max-ephones 10 
-            max-dn 100
-            ip source-address 192.168.10.1 port 2000
-            sdspfarm units 1
-            sdspfarm tag 1 confprof1
-            transfer-system full-consult
-            transfer-pattern .
-            
-            
-            ephone-dn  5  octo-line
-             number A000
-             conference ad-hoc
-             no huntstop
-             
-            ephone-dn  6  octo-line
-             number A000
-             conference ad-hoc
-
-
-            MEET ME
-
-            ephone-dn 7 octo-line
-            description Meet-Me conference extension
-            number 8000
-            conference meetme
-            no huntstop
-            
-            ephone-dn 78 octo-line
-            description Meet-Me conference extension
-            number 8000
-            conference meetme
-            
-            
-            ephone-template 1  -  "(Create a button template and assign it to the phones, so that the "Meet Me" soft key would be displayed)"
-            softkeys connected Hold Endcall trnsfer Park Confrm ConfList Join Select RmLstC
-            softkeys hold Resume Newcall Join Select 
-            softkeys idle Redial newcall Cfwdall ConfList Join Login Pickup Gpickup Dnd
-            softkeys seized Redial Endcall Cfwdall Pickup Gpickup Callback Meetme 
-            
-            ephone 1
-            ephone-template 1  -  "(Assign the ephone-template under all phones which would use the "Meet Me" conferencing)"
-            
-            telephony-service
-            create cnf-files
-            restart all  -  "(Would restart all phones)"
+                "Not everything included here is needed for the conferencing to work"
+    
+    
+                voice-card 0
+                dsp services dspfarm
+                exit
+                
+                sccp local gigabitEthernet 0/0  -  "(Specifies the local SCCP Interface)"
+                sccp ccm 192.168.10.1 identifier 100 version 7.0+  -  "(Configure the IP address of the call-agent to register the SCCP)"
+                sccp
+    
+                sccp ccm group 1
+                associate ccm 100 priority 1
+                associate profile 1 register confprof1
+                bind interface gigabitEthernet 0/0
+                exit
+                
+                dspfarm profile 1 conference
+                 codec g711ulaw
+                 maximum conference-participants 8
+                 maximum sessions 8
+                 associate application sccp
+                 shutdown
+                 no shut
+                 
+                 
+                telephony-service
+                conference hardware
+                max-ephones 10 
+                max-dn 100
+                ip source-address 192.168.10.1 port 2000
+                sdspfarm units 1
+                sdspfarm tag 1 confprof1
+                transfer-system full-consult
+                transfer-pattern .
+                
+                
+                ephone-dn  5  octo-line
+                 number A000
+                 conference ad-hoc
+                 no huntstop
+                 
+                ephone-dn  6  octo-line
+                 number A000
+                 conference ad-hoc
+    
+    
+                MEET ME
+    
+                ephone-dn 7 octo-line
+                description Meet-Me conference extension
+                number 8000
+                conference meetme
+                no huntstop
+                
+                ephone-dn 78 octo-line
+                description Meet-Me conference extension
+                number 8000
+                conference meetme
+                
+                
+                ephone-template 1  -  "(Create a button template and assign it to the phones, so that the "Meet Me" soft key would be displayed)"
+                softkeys connected Hold Endcall trnsfer Park Confrm ConfList Join Select RmLstC
+                softkeys hold Resume Newcall Join Select 
+                softkeys idle Redial newcall Cfwdall ConfList Join Login Pickup Gpickup Dnd
+                softkeys seized Redial Endcall Cfwdall Pickup Gpickup Callback Meetme 
+                
+                ephone 1
+                ephone-template 1  -  "(Assign the ephone-template under all phones which would use the "Meet Me" conferencing)"
+                
+                telephony-service
+                create cnf-files
+                restart all  -  "(Would restart all phones)"
 
 
             """
@@ -731,42 +731,42 @@ class Application(Frame):
 
             CONFIGURE IOS BASED MEDIA RESOURCES TO BE REGISTERED WITH CUCM
 
-            voice-card 0
-            dsp service dspfarm 
-
-            dspfarm profile 1 transcode 
-            codec ...
-            maximum sessions 2
-            associate application sccp 
-            no shut 
-
-            dspfarm profile 2 conference
-            codec g711ulaw
-            maximum conference-participants 8
-            maximum sessions 8
-            associate application sccp
-            shutdown
-            no shut
-
-            dspfarm profile 3 mtp
-            codec ...
-            codec pass-through 
-            maximum sessions hardware sessions 1
-            associate application sccp 
-            no shut 
-
-            sccp local gigabitethernet 0/0 
-            sccp ccm 10.122.148.47 identifier 1 priority 1 version 7.0+  -  "(This is the CUCM's IP address)"
-
-            sccp ccm group 1 
-            bind interface gigabitethernet 0/0 
-            associate ccm 1 priority 1 
-            associate profile 1 register name trans_prof
-            associate profile 2 register name conf_prof 
-            associate profile 3 register name mtp_1 
-            associate profile 3 register name mtp_2 
-
-            sccp 
+                voice-card 0
+                dsp service dspfarm 
+    
+                dspfarm profile 1 transcode 
+                codec ...
+                maximum sessions 2
+                associate application sccp 
+                no shut 
+    
+                dspfarm profile 2 conference
+                codec g711ulaw
+                maximum conference-participants 8
+                maximum sessions 8
+                associate application sccp
+                shutdown
+                no shut
+    
+                dspfarm profile 3 mtp
+                codec ...
+                codec pass-through 
+                maximum sessions hardware sessions 1
+                associate application sccp 
+                no shut 
+    
+                sccp local gigabitethernet 0/0 
+                sccp ccm 10.122.148.47 identifier 1 priority 1 version 7.0+  -  "(This is the CUCM's IP address)"
+    
+                sccp ccm group 1 
+                bind interface gigabitethernet 0/0 
+                associate ccm 1 priority 1 
+                associate profile 1 register name trans_prof
+                associate profile 2 register name conf_prof 
+                associate profile 3 register name mtp_1 
+                associate profile 3 register name mtp_2 
+    
+                sccp 
 
 
             """
@@ -778,33 +778,33 @@ class Application(Frame):
 
             CONFIGURE FIRMWARE FOR PHONE 
 
-            Upload the files to the flash (copy tftp: flash:)
-
-            conf t
-
-            tftp-server flash:FIRMWARE/apps45.9-4-2ES22.sbn alias apps45.9-4-2ES22.sbn
-            tftp-server flash:FIRMWARE/cnu45.9-4-2ES22.sbn alias cnu45.9-4-2ES22.sbn
-            tftp-server flash:FIRMWARE/cvm45sccp.9-4-2ES22.sbn alias cvm45sccp.9-4-2ES22.sbn
-            tftp-server flash:FIRMWARE/dsp45.9-4-2ES22.sbn alias dsp45.9-4-2ES22.sbn
-            tftp-server flash:FIRMWARE/jar45sccp.9-4-2ES22.sbn alias jar45sccp.9-4-2ES22.sbn
-            tftp-server flash:FIRMWARE/SCCP45.9-4-2SR2-2S.loads alias SCCP45.9-4-2SR2-2S.loads
-            tftp-server flash:FIRMWARE/term45.default.loads alias term45.default.loads
-            tftp-server flash:FIRMWARE/term65.default.loads alias term65.default.loads
-
-            telephony-service
-            load 7965 SCCP45.9-4-2SR2-2S
-            create cnf-files
-            ephone 2 
-            restart 
-
-            <FOR SIP PHONES>
-
-            voice register global
-            load 7965 SCCP45.9-4-2SR2-2S
-            create profile
-
-            voice register pool
-            restart
+                Upload the files to the flash (copy tftp: flash:)
+    
+                conf t
+    
+                tftp-server flash:FIRMWARE/apps45.9-4-2ES22.sbn alias apps45.9-4-2ES22.sbn
+                tftp-server flash:FIRMWARE/cnu45.9-4-2ES22.sbn alias cnu45.9-4-2ES22.sbn
+                tftp-server flash:FIRMWARE/cvm45sccp.9-4-2ES22.sbn alias cvm45sccp.9-4-2ES22.sbn
+                tftp-server flash:FIRMWARE/dsp45.9-4-2ES22.sbn alias dsp45.9-4-2ES22.sbn
+                tftp-server flash:FIRMWARE/jar45sccp.9-4-2ES22.sbn alias jar45sccp.9-4-2ES22.sbn
+                tftp-server flash:FIRMWARE/SCCP45.9-4-2SR2-2S.loads alias SCCP45.9-4-2SR2-2S.loads
+                tftp-server flash:FIRMWARE/term45.default.loads alias term45.default.loads
+                tftp-server flash:FIRMWARE/term65.default.loads alias term65.default.loads
+    
+                telephony-service
+                load 7965 SCCP45.9-4-2SR2-2S
+                create cnf-files
+                ephone 2 
+                restart 
+    
+                <FOR SIP PHONES>
+    
+                voice register global
+                load 7965 SCCP45.9-4-2SR2-2S
+                create profile
+    
+                voice register pool
+                restart
 
 
             """
@@ -816,14 +816,14 @@ class Application(Frame):
 
             CONFIG PAGING 
 
-            ephone-dn 10
-            number 1212
-            name PAGING
-            paging ip 239.1.1.10 port 2000  -  "(Multicast address)"
-            ephone 1
-            paging-dn 10 multicast
-            ephone 2
-            paging-dn 10 multicast
+                ephone-dn 10
+                number 1212
+                name PAGING
+                paging ip 239.1.1.10 port 2000  -  "(Multicast address)"
+                ephone 1
+                paging-dn 10 multicast
+                ephone 2
+                paging-dn 10 multicast
 
 
             """
@@ -835,14 +835,14 @@ class Application(Frame):
 
             CONFIGURE SPEED DIAL CME SCCP 
 
-            ephone 2
-            speed-dial 1 270000 label "Speed-Dial"
-
-            telephony-service
-            create cnf-files
-
-            ephone 2
-            restart
+                ephone 2
+                speed-dial 1 270000 label "Speed-Dial"
+    
+                telephony-service
+                create cnf-files
+    
+                ephone 2
+                restart
 
 
             """
@@ -854,54 +854,54 @@ class Application(Frame):
 
             CME - NIGHT SERVICE
 
-             Configuration Template
-
-            telephony-service
-             night-service day day start-time stop-time
-             night-service date month date start-time stop-time
-             night-service everyday start-time stop-time
-             night-service weekday start-time stop-time
-             night-service weekend start-time stop-time
-             night-service code digit-string
-             timeouts night-service-bell seconds
-            !
-            ephone-dn dn-tag
-             night-service bell
-            !
-            ephone phone-tag
-             night-service bell
-
-            1. Define Night-Service time slots
-
-            telephony-service
-             night-service day Sun 08:00 07:59
-             night-service day Mon 17:00 07:59
-             night-service day Tue 17:00 07:59
-             night-service day Wed 17:00 07:59
-             night-service day Thu 17:00 07:59
-             night-service day Fri 17:00 07:59
-             night-service day Sat 08:00 07:59
-
-            2. Configure call-forward night-service command under the ephone-dn.
-
-            ephone-dn 19
-             number 8500
-             label Front Desk
-             name Front Desk
-             call-forward busy 9201
-             call-foward noan 9202 timeout 10
-             call-forward night-service 8501
-             night-service bell
-
-            - Assuming 8500 is the Front Desk number. As per the above configuration of ephone-dn during non night-service hours the call was forward to the 9201 and 9202 when busy or no answer. 
-            - During night-service hours the call would be redirected to 8501 which could your Auto-Attendant number or it could be another destination. It could be pointing to a dial-peer which further points to your cell/home number. For example :- 
-
-            dial-peer voice 20 pots
-             description == Security Room ==
-             destination-pattern 8501
-             port 1/1
-
-            - With the above configuration, the call will be sent to this dial-peer which is an Analog Phone in the security room. 
+                 Configuration Template
+    
+                telephony-service
+                 night-service day day start-time stop-time
+                 night-service date month date start-time stop-time
+                 night-service everyday start-time stop-time
+                 night-service weekday start-time stop-time
+                 night-service weekend start-time stop-time
+                 night-service code digit-string
+                 timeouts night-service-bell seconds
+                !
+                ephone-dn dn-tag
+                 night-service bell
+                !
+                ephone phone-tag
+                 night-service bell
+    
+                1. Define Night-Service time slots
+    
+                telephony-service
+                 night-service day Sun 08:00 07:59
+                 night-service day Mon 17:00 07:59
+                 night-service day Tue 17:00 07:59
+                 night-service day Wed 17:00 07:59
+                 night-service day Thu 17:00 07:59
+                 night-service day Fri 17:00 07:59
+                 night-service day Sat 08:00 07:59
+    
+                2. Configure call-forward night-service command under the ephone-dn.
+    
+                ephone-dn 19
+                 number 8500
+                 label Front Desk
+                 name Front Desk
+                 call-forward busy 9201
+                 call-foward noan 9202 timeout 10
+                 call-forward night-service 8501
+                 night-service bell
+    
+                - Assuming 8500 is the Front Desk number. As per the above configuration of ephone-dn during non night-service hours the call was forward to the 9201 and 9202 when busy or no answer. 
+                - During night-service hours the call would be redirected to 8501 which could your Auto-Attendant number or it could be another destination. It could be pointing to a dial-peer which further points to your cell/home number. For example :- 
+    
+                dial-peer voice 20 pots
+                 description == Security Room ==
+                 destination-pattern 8501
+                 port 1/1
+    
+                - With the above configuration, the call will be sent to this dial-peer which is an Analog Phone in the security room. 
 
 
             """
@@ -912,84 +912,89 @@ class Application(Frame):
 
             B_ACD = """
 
-            B-ACD Basic Example Configuration
+            B-ACD BASIC EXAMPLE CONFIGURATION
 
 
-            voice hunt-group 1 parallel
-             list 1012,1010,1014,1011
-             timeout 30
-             pilot 1111
-            !
-            !
-            voice hunt-group 2 sequential
-             list 1012,1010,1014,1011
-             timeout 10
-             pilot 7000
+                voice hunt-group 1 parallel
+                 list 1012,1010,1014,1011
+                 timeout 30
+                 pilot 1111
+                !
+                !
+                voice hunt-group 2 sequential
+                 list 1012,1010,1014,1011
+                 timeout 10
+                 pilot 7000
+    
+    
+                application
+                service queue flash:app-b-acd-3.0.0.4.tcl
+                param number-of-hunt-grps 2
+                param aa-hunt2 7000
+                param aa-hunt3 1111
+                param queue-len 15
+                param queue-manager-debugs 1
+    
+                service aa flash:app-b-acd-aa-3.0.0.4.tcl
+                paramspace english index 1
+                paramspace english language en
+                paramspace english location flash:
+                param service-name queue
+                param handoff-string aa
+                param aa-pilot 8005550100
+                param welcome-prompt _bacd_welcome.au
+                param number-of-hunt-grps 2
+                param dial-by-extension-option 1
+                param second-greeting-time 60
+                param call-retry-timer 15
+                param max-time-call-retry 700
+                param max-time-vm-retry 2
+                param voice-mail 5003
+    
+                !
+    
+                dial-peer voice 1000 pots
+                 service aa
+                 incoming called-number 8005550100
+                 port 0/0/0:23
+                !
+                dial-peer voice 1004 voip
+                 service aa
+                 destination-pattern 8005550100
+                 session target ipv4:192.168.130.12
+                 incoming called-number 8005550100
+                 dtmf-relay h245-alphanumeric
+                 codec g711ulaw
+                 no vad
+    
+                 === CME11.6 files ===
+                app-b-acd-3.0.0.4.tcl
+                app-b-acd-aa-3.0.0.4.tcl
+                en_bacd_allagentsbusy.au
+                en_bacd_disconnect.au
+                en_bacd_enter_dest.au
+                en_bacd_invalidoption.au
+                en_bacd_music_on_hold.au
+                en_bacd_options_menu.au
+                en_bacd_welcome.au
+    
+                NeverGonnaGiveYouUp_pcm_ulaw-1495111440.wav  ===> "(MOH under Telephony Service)"
+    
+                dial-peer voice 110 voip
+                 service aa
+                 destination-pattern 10000
+                 session target ipv4:10.122.148.26
+                 incoming called-number 10000
+                 dtmf-relay rtp-nte
+                 codec g711ulaw
+                 no vad 
+    
+                CSCuh94827,CSCti34003, bugs releated
+                
+                When making B-ACD changes:
+    
+                Use the "show call application sessions" to figure out the application's ID number and then use "call application session stop id #" to stop the application.
 
-
-            application
-            service queue flash:app-b-acd-3.0.0.4.tcl
-            param number-of-hunt-grps 2
-            param aa-hunt2 7000
-            param aa-hunt3 1111
-            param queue-len 15
-            param queue-manager-debugs 1
-
-            service aa flash:app-b-acd-aa-3.0.0.4.tcl
-            paramspace english index 1
-            paramspace english language en
-            paramspace english location flash:
-            param service-name queue
-            param handoff-string aa
-            param aa-pilot 8005550100
-            param welcome-prompt _bacd_welcome.au
-            param number-of-hunt-grps 2
-            param dial-by-extension-option 1
-            param second-greeting-time 60
-            param call-retry-timer 15
-            param max-time-call-retry 700
-            param max-time-vm-retry 2
-            param voice-mail 5003
-
-            !
-
-            dial-peer voice 1000 pots
-             service aa
-             incoming called-number 8005550100
-             port 0/0/0:23
-            !
-            dial-peer voice 1004 voip
-             service aa
-             destination-pattern 8005550100
-             session target ipv4:192.168.130.12
-             incoming called-number 8005550100
-             dtmf-relay h245-alphanumeric
-             codec g711ulaw
-             no vad
-
-             === CME11.6 files ===
-            app-b-acd-3.0.0.4.tcl
-            app-b-acd-aa-3.0.0.4.tcl
-            en_bacd_allagentsbusy.au
-            en_bacd_disconnect.au
-            en_bacd_enter_dest.au
-            en_bacd_invalidoption.au
-            en_bacd_music_on_hold.au
-            en_bacd_options_menu.au
-            en_bacd_welcome.au
-
-            NeverGonnaGiveYouUp_pcm_ulaw-1495111440.wav  ===> "(MOH under Telephony Service)"
-
-            dial-peer voice 110 voip
-             service aa
-             destination-pattern 10000
-             session target ipv4:10.122.148.26
-             incoming called-number 10000
-             dtmf-relay rtp-nte
-             codec g711ulaw
-             no vad 
-
-            CSCuh94827,CSCti34003, bugs releated
 
 
             """
@@ -1001,13 +1006,13 @@ class Application(Frame):
 
             CALL HUNT GROUP - normal 
 
-            ephone-hunt 1 peer 
-            pilot 4446
-            list 1001, 1002, 1003,
-            final 4004
-            timeout 30 
-            hops 30
-            auto logout 2
+                ephone-hunt 1 peer 
+                pilot 4446
+                list 1001, 1002, 1003,
+                final 4004
+                timeout 30 
+                hops 30
+                auto logout 2
 
 
             """
@@ -1019,13 +1024,13 @@ class Application(Frame):
 
             CALL HUNT GROUP 
             
-            "Call all phones simultaneously"
-
-            voice hunt-group 4 parallel
-            pilot 1000
-            list 1001, 1002, 1003, 1004
-            final 2000
-            timeout 20 
+                "Call all phones simultaneously"
+    
+                voice hunt-group 4 parallel
+                pilot 1000
+                list 1001, 1002, 1003, 1004
+                final 2000
+                timeout 20 
 
 
             """
@@ -1037,8 +1042,8 @@ class Application(Frame):
 
             CALL FORWARDING 
 
-            Router(config)#ephone-dn 2
-            Router(config-ephone-dn)#call-forward noan 3333 timeout 15
+                Router(config)#ephone-dn 2
+                Router(config-ephone-dn)#call-forward noan 3333 timeout 15
 
 
             """
@@ -1050,13 +1055,13 @@ class Application(Frame):
 
             CALL PARK 
 
-            ephone-dn 4
-            number 0000
-            park-slot timeout 10 limit 2 recall
-            
-            telephony service 
-            call-park system application 
-            create cnf-files
+                ephone-dn 4
+                number 0000
+                park-slot timeout 10 limit 2 recall
+                
+                telephony service 
+                call-park system application 
+                create cnf-files
 
 
             """
@@ -1068,10 +1073,10 @@ class Application(Frame):
 
             ENABLE TRANSFER IN CME TO CUCM 
 
-            telephony-service
-            transfer-system full-consult
-            transfer-pattern 27....
-            create cnf-files
+                telephony-service
+                transfer-system full-consult
+                transfer-pattern 27....
+                create cnf-files
 
 
             """
@@ -1083,16 +1088,16 @@ class Application(Frame):
 
             INSTALL CUE (SRE) 
 
-            int sm1/0
-            ip unnumbered
-            no shut 
-            service-module ip address 10.122.148.8 255.255.255.192
-            service-module ip default-gateway 10.122.148.27
-            exit
-            ip route 10.122.148.8 255.255.255.192 sm1/0
-
-            service-module sm1/0 install url ftp://username:password@172.18.110.87/cue-vm-k9.SPA.sme.8.6.10.pkg                                         Delete the installed Cisco Unified SIP Proxy and proceed with new installation? [no]: y
-            service-module sm1/0 session 
+                int sm1/0
+                ip unnumbered
+                no shut 
+                service-module ip address 10.122.148.8 255.255.255.192
+                service-module ip default-gateway 10.122.148.27
+                exit
+                ip route 10.122.148.8 255.255.255.192 sm1/0
+    
+                service-module sm1/0 install url ftp://username:password@172.18.110.87/cue-vm-k9.SPA.sme.8.6.10.pkg                                         Delete the installed Cisco Unified SIP Proxy and proceed with new installation? [no]: y
+                service-module sm1/0 session 
 
 
             """
@@ -1102,99 +1107,99 @@ class Application(Frame):
         elif user_choice == "CUE Configuration":
             CUE_Config = """
 
-            CONFIGURE CUE ON CME 
-            
-            
-            "This configuration is for voicemail (mailbox) and auto-attendant"
-
-            "License Activation on CUE:"
-
-            show license evaluation
-            license activate voicemail mailboxes 500
-            license activate ports 32
-            wr
-            reload  -  "(reloads the module)"
-
-            "On the CME"
-
-            conf t 
-            ephone-dn 
-            call-forward noan 6800 timeout 15
-
-
-            "Configure the voicemail  (On CUE)"
-
-            conf t
-            ccn application voicemail 
-            description "Voice Mail"
-            maxsessions 8  
-            
-            conf t 
-            username user1 create
-            username user1 fullname display "Vlkolev 1"
-            username user1 phonenumber 272222
-            voicemail mailbox owner user1
-            enable
-            expiration time 10
-            greeting standard recording-type system-default
-            mailboxsize 300
-            messagesize 120
-            tutorial
-            end
-            
-            ccn trigger sip phonenumber 6000
-            application "voicemail"
-            enabled
-            maxsessions 1
-            end trigger
-
-            "Configure the AutoAttendant:"
-
-            ccn application AutoAttendant
-            maxsessions 4
-            parameter "operExtn" "1000"
-            parameter "MaxRetry" "3"
-            parameter "welcomePrompt" "ciscowelcome.wav"
-                     
-            ccn trigger sip phonenumber 6001
-            application autoattendant
-            enabled
-            maxsessions 2
-            end trigger
-
-            "Configure AvT:"
-
-
-            ccn trigger sip phonenumber 6002
-            application promptmgmt
-            enabled
-            maxsessions 1
-            end  trigger
-
-
-            Configuration on CME:
-
-            dial-peer voice 12 voip
-            destination-pattern 6...
-            session protocol sipv2
-            session target ipv4:10.122.148.8
-            dtmf-relay sip-notify
-            codec g711ulaw
-            no vad
-
-            ephone-dn 1
-            all-forward noan 6000 timeout 8
-
-            allow-connections h323 to sip
-            allow-connections sip to h323
-            allow-connections sip to h323
-
-
-            Configure CCN-subsystem
-
-            ccn subsystem sip
-             gateway address "172.18.106.105"
-             end subsystem
+                CONFIGURE CUE ON CME 
+                
+                
+                "This configuration is for voicemail (mailbox) and auto-attendant"
+    
+                "License Activation on CUE:"
+    
+                show license evaluation
+                license activate voicemail mailboxes 500
+                license activate ports 32
+                wr
+                reload  -  "(reloads the module)"
+    
+                "On the CME"
+    
+                conf t 
+                ephone-dn 
+                call-forward noan 6800 timeout 15
+    
+    
+                "Configure the voicemail  (On CUE)"
+    
+                conf t
+                ccn application voicemail 
+                description "Voice Mail"
+                maxsessions 8  
+                
+                conf t 
+                username user1 create
+                username user1 fullname display "Vlkolev 1"
+                username user1 phonenumber 272222
+                voicemail mailbox owner user1
+                enable
+                expiration time 10
+                greeting standard recording-type system-default
+                mailboxsize 300
+                messagesize 120
+                tutorial
+                end
+                
+                ccn trigger sip phonenumber 6000
+                application "voicemail"
+                enabled
+                maxsessions 1
+                end trigger
+    
+                "Configure the AutoAttendant:"
+    
+                ccn application AutoAttendant
+                maxsessions 4
+                parameter "operExtn" "1000"
+                parameter "MaxRetry" "3"
+                parameter "welcomePrompt" "ciscowelcome.wav"
+                         
+                ccn trigger sip phonenumber 6001
+                application autoattendant
+                enabled
+                maxsessions 2
+                end trigger
+    
+                "Configure AvT:"
+    
+    
+                ccn trigger sip phonenumber 6002
+                application promptmgmt
+                enabled
+                maxsessions 1
+                end  trigger
+    
+    
+                Configuration on CME:
+    
+                dial-peer voice 12 voip
+                destination-pattern 6...
+                session protocol sipv2
+                session target ipv4:10.122.148.8
+                dtmf-relay sip-notify
+                codec g711ulaw
+                no vad
+    
+                ephone-dn 1
+                all-forward noan 6000 timeout 8
+    
+                allow-connections h323 to sip
+                allow-connections sip to h323
+                allow-connections sip to h323
+    
+    
+                Configure CCN-subsystem
+    
+                ccn subsystem sip
+                 gateway address "172.18.106.105"
+                 end subsystem
 
 
             """
@@ -1206,32 +1211,32 @@ class Application(Frame):
 
             CONFIGURE MWI OUTCALL ON CUE 
 
-            On CUE: 
-
-            ccn subsystem sip
-            mwi sip outcall
-            exit
-            show ccn subsystem sip
-            conf t
-            ccn application ciscomwiapplication
-            parameter strMWI_ON_DN 8000
-            parameter strMWI_OFF_DN 8001
-            exit
-
-
-            On CME:
-
-            ephone-dn 6
-            number 8000......
-            mwi on
-            
-            ephone-dn 7
-            number 8001......
-            mwi off
-
-            telephony-service
-            voicemail 6000 (voicemail number)  -  "(This is to use the envelope icon on the phone.)"
-            create cnf-files 
+                On CUE: 
+    
+                ccn subsystem sip
+                mwi sip outcall
+                exit
+                show ccn subsystem sip
+                conf t
+                ccn application ciscomwiapplication
+                parameter strMWI_ON_DN 8000
+                parameter strMWI_OFF_DN 8001
+                exit
+    
+    
+                On CME:
+    
+                ephone-dn 6
+                number 8000......
+                mwi on
+                
+                ephone-dn 7
+                number 8001......
+                mwi off
+    
+                telephony-service
+                voicemail 6000 (voicemail number)  -  "(This is to use the envelope icon on the phone.)"
+                create cnf-files 
 
 
             """
@@ -1243,14 +1248,14 @@ class Application(Frame):
 
             CONFIG SCCP SRST ON ROUTER 
 
-            call-manager-fallback 
-            ip source-address <ip address> <port (2000)>
-            max-ephones 
-            max-dn (dual-line, octo-line)
-
-            call-manager-fallback
-            shut
-            no shut
+                call-manager-fallback 
+                ip source-address <ip address> <port (2000)>
+                max-ephones 
+                max-dn (dual-line, octo-line)
+    
+                call-manager-fallback
+                shut
+                no shut
 
 
             """
@@ -1262,15 +1267,15 @@ class Application(Frame):
 
             CONFIG SCCP CME SRST CME ON ROUTER 
 
-            telephony-service
-            srst mode auto-provision all
-            srst dn line-mode dual
-            srst dn template 1
-            srst ephone template 1
-            srst ephone description SRST FOR CUCM
-            ip source-address 10.122.148.27
-            max-dn 20
-            max-ephones 10
+                telephony-service
+                srst mode auto-provision all
+                srst dn line-mode dual
+                srst dn template 1
+                srst ephone template 1
+                srst ephone description SRST FOR CUCM
+                ip source-address 10.122.148.27
+                max-dn 20
+                max-ephones 10
 
 
             """
@@ -1282,32 +1287,32 @@ class Application(Frame):
 
             CONFIG MGCP FALLBACK SRST 
 
-            ccm-manager fallback-mgcp 
-            ccm-manager mgcp 
-            ccm-manager config server 10.122.148.47
-
-            application
-            global
-            service alternate default 
-
-            dial-peer voice 1 pots 
-            destination-pattern 9T 
-            incoming called-number .
-            direct-inward-dial 
-            port 0/0/0:15 
-
-            dial-peer voice 2 pots 
-            application mgcpapp 
-            incoming called-number .
-            direct-inward-dial
-            port 0/0/0:15 
-
-            call-manager-fallback 
-            ip source-address 10.122.148.27 port 2000
-            max-dn 20
-            max-ephone 10 
-            shut
-            no shut
+                ccm-manager fallback-mgcp 
+                ccm-manager mgcp 
+                ccm-manager config server 10.122.148.47
+    
+                application
+                global
+                service alternate default 
+    
+                dial-peer voice 1 pots 
+                destination-pattern 9T 
+                incoming called-number .
+                direct-inward-dial 
+                port 0/0/0:15 
+    
+                dial-peer voice 2 pots 
+                application mgcpapp 
+                incoming called-number .
+                direct-inward-dial
+                port 0/0/0:15 
+    
+                call-manager-fallback 
+                ip source-address 10.122.148.27 port 2000
+                max-dn 20
+                max-ephone 10 
+                shut
+                no shut
 
 
             """
@@ -1319,23 +1324,25 @@ class Application(Frame):
 
             CONFIG SIP SRST 
 
-            voice service voip
-            allow-connections sip to sip
-            allow-connections h323 to sip
-            allow-connections sip to h323
-            sip
-            registrar server
-            
-            voice register global
-            default mode
-            system message SIP SRST
-            max-dn 25
-            max-pool 15
-            
-            voice register pool 1
-            id network 10.63.123.0 mask 255.255.255.0
-            codec g711ulaw
-            dtmf-relay rtp-nte sip-notify
+                voice service voip
+                allow-connections sip to sip
+                allow-connections h323 to sip
+                allow-connections sip to h323
+                sip
+                registrar server
+                
+                voice register global
+                default mode
+                system message SIP SRST
+                max-dn 25
+                max-pool 15
+                
+                voice register pool 1
+                id network 10.63.123.0 mask 255.255.255.0
+                codec g711ulaw
+                dtmf-relay rtp-nte sip-notify
+                
+                
 
             """
 
@@ -1346,73 +1353,73 @@ class Application(Frame):
 
             COR LIST CONFIG 
 
-           "With this configuration:
-
-               - dn 1001 can call all numbers
-               - dn 1002 can call all number except "call1900"
-               - dn 1003 can call only emergency and local calls
-               - dn 1004 can call all numbers (has no corlist applied)" 
-
-
-            dial-peer cor custom
-              name emergency
-              name local_call
-              name call1800
-              name call1900
-            !
-            dial-peer cor list Manager
-              member emergency
-              member local_call
-              member call1800
-              member call1900
-            !
-            dial-peer cor list Facilities
-              member emergency
-              member local_call
-              member call1800
-            !
-            dial-peer cor list Guest
-              member emergency
-              member local_call
-            !
-            dial-peer voice 1 voip
-              destination-pattern 408….
-              session target ipv4:1.1.1.1
-              corlist outgoing calllocal
-            !
-            dial-peer voice 2 voip
-              destination-pattern 1800…
-              session target ipv4:1.1.1.1
-              corlist outgoing call1800
-            !
-            dial-peer voice 3 pots
-              destination-pattern 1900…
-              port 1/0/0
-              corlist outgoing call1900
-            !
-            dial-peer voice 4 pots
-              destination-pattern 911
-              port 1/0/1
-              corlist outgoing emergency
-            !
-            dial-peer voice 5 pots
-              destination-pattern 316….
-              port 1/1/0
-            !
-            ephone-dn 1
-              number 1001
-              cor incoming Manager
-            !
-            ephone-dn 2
-              number 1002
-              cor incoming Facilities
-            !
-            ephone-dn 3
-              number 1003
-              cor incoming Guest
-            !
-            ephone-dn 4
-              number 1004 
+               "With this configuration:
+    
+                   - dn 1001 can call all numbers
+                   - dn 1002 can call all number except "call1900"
+                   - dn 1003 can call only emergency and local calls
+                   - dn 1004 can call all numbers (has no corlist applied)" 
+    
+    
+                dial-peer cor custom
+                  name emergency
+                  name local_call
+                  name call1800
+                  name call1900
+                !
+                dial-peer cor list Manager
+                  member emergency
+                  member local_call
+                  member call1800
+                  member call1900
+                !
+                dial-peer cor list Facilities
+                  member emergency
+                  member local_call
+                  member call1800
+                !
+                dial-peer cor list Guest
+                  member emergency
+                  member local_call
+                !
+                dial-peer voice 1 voip
+                  destination-pattern 408….
+                  session target ipv4:1.1.1.1
+                  corlist outgoing calllocal
+                !
+                dial-peer voice 2 voip
+                  destination-pattern 1800…
+                  session target ipv4:1.1.1.1
+                  corlist outgoing call1800
+                !
+                dial-peer voice 3 pots
+                  destination-pattern 1900…
+                  port 1/0/0
+                  corlist outgoing call1900
+                !
+                dial-peer voice 4 pots
+                  destination-pattern 911
+                  port 1/0/1
+                  corlist outgoing emergency
+                !
+                dial-peer voice 5 pots
+                  destination-pattern 316….
+                  port 1/1/0
+                !
+                ephone-dn 1
+                  number 1001
+                  cor incoming Manager
+                !
+                ephone-dn 2
+                  number 1002
+                  cor incoming Facilities
+                !
+                ephone-dn 3
+                  number 1003
+                  cor incoming Guest
+                !
+                ephone-dn 4
+                  number 1004 
 
 
              """
@@ -1425,18 +1432,18 @@ class Application(Frame):
             SPECIFIC CALL BLOCK CONFIG
 
 
-            "Configure the following to block calls from 1234567"
-
-            Voice translation-rule 100
-            rule 1 reject /1234567/
-            
-            Voice translation-profile BLOCK
-            translate calling 100
-            
-            dialpeer voice 1 pots
-            incoming called-number .
-            call-block translation-profile incoming BLOCK
-            call-block disconnect-cause incoming call-reject
+                "Configure the following to block calls from 1234567"
+    
+                Voice translation-rule 100
+                rule 1 reject /1234567/
+                
+                Voice translation-profile BLOCK
+                translate calling 100
+                
+                dialpeer voice 1 pots
+                incoming called-number .
+                call-block translation-profile incoming BLOCK
+                call-block disconnect-cause incoming call-reject
 
 
             """
@@ -1449,13 +1456,13 @@ class Application(Frame):
             TOLL-FRAUD CONFIGURATION 
             
 
-            voice service voip                                    
-                ip address trusted authenticate
-                ipv4 ..... <IP/Network address that you'd like to permit for voice>
-
-            
-            
-            "All IP addresses that are configured in the VOIP dial-peers would be automatically trusted"
+                voice service voip                                    
+                    ip address trusted authenticate
+                    ipv4 ..... <IP/Network address that you'd like to permit for voice>
+    
+                
+                
+                "All IP addresses that are configured in the VOIP dial-peers would be automatically trusted"
 
 
             """
@@ -1467,8 +1474,8 @@ class Application(Frame):
 
             HOW TO CLEAR A STUCK CALL
 
-            show call active voice  - get the ID (112B) for the call leg(s)
-            clear call voice causecode 1 id 112B
+                show call active voice  - get the ID (112B) for the call leg(s)
+                clear call voice causecode 1 id 112B
 
 
             """
@@ -1481,30 +1488,30 @@ class Application(Frame):
             CONFIGURE MOH AND MULTICAST MOH
 
 
-            conf t
-            telephony-service
-            moh filename  -  "(For unicast MOH)"
-            multicast moh ip-address port port-number  -  "(For multicast MOH)"
-            ccm-manager music-on-hold  -  "(FOR CUCM)"
-            exit
-            
-            ephone phone-tag
-            multicast-moh  -  "(For multicast MOH)"
-            end 
-
-            
-            "Multicast MOH wouldn't work over WAN"
-
-
-            ENABLE MULTICAST ON INTERFACE (for multicast MOH)
-
-
-            conf t
-            interface gigabitethernet 0/0
-            ip pim sparse-mode
-
-            conf t 
-            ip multicast-routing
+                conf t
+                telephony-service
+                moh filename  -  "(For unicast MOH)"
+                multicast moh ip-address port port-number  -  "(For multicast MOH)"
+                ccm-manager music-on-hold  -  "(FOR CUCM)"
+                exit
+                
+                ephone phone-tag
+                multicast-moh  -  "(For multicast MOH)"
+                end 
+    
+                
+                "Multicast MOH wouldn't work over WAN"
+    
+    
+                ENABLE MULTICAST ON INTERFACE (for multicast MOH)
+    
+    
+                conf t
+                interface gigabitethernet 0/0
+                ip pim sparse-mode
+    
+                conf t 
+                ip multicast-routing
 
 
             """
@@ -1516,7 +1523,7 @@ class Application(Frame):
 
             VERIFY IOS IMAGE
 
-            verify flash:nameoffile   - verify if image is ok (check md5 with the md5 in www.cisco.com)
+                verify flash:nameoffile   - verify if image is ok (check md5 with the md5 in www.cisco.com)
 
 
             """
@@ -1529,25 +1536,25 @@ class Application(Frame):
             FAST-TRACK EXAMPLE CONFIGURATION
 
 
-            voice register pool-type  7841
-             xml-config maxNumCalls 4
-             xml-config busyTrigger 2
-             telnet-support
-             gsm-support
-             transport tcp
-             num-lines 4
-             addons 2
-             description Cisco IP Phone 7841
-             reference-pooltype 6941
-            !
-            voice register pool  1
-             busy-trigger-per-button 1
-             id mac 0008.2F1B.747B
-             type 7841
-             number 1 dn 1
-             template 1
-             dtmf-relay rtp-nte
-             description MY PHONE
+                voice register pool-type  7841
+                 xml-config maxNumCalls 4
+                 xml-config busyTrigger 2
+                 telnet-support
+                 gsm-support
+                 transport tcp
+                 num-lines 4
+                 addons 2
+                 description Cisco IP Phone 7841
+                 reference-pooltype 6941
+                !
+                voice register pool  1
+                 busy-trigger-per-button 1
+                 id mac 0008.2F1B.747B
+                 type 7841
+                 number 1 dn 1
+                 template 1
+                 dtmf-relay rtp-nte
+                 description MY PHONE
 
 
              """
@@ -1559,18 +1566,18 @@ class Application(Frame):
 
             CPU SPIKE SCRIPT 
 
-            event manager applet capture_cpu_spike
-            event snmp oid 1.3.6.1.4.1.9.2.1.56 get-type next entry-op ge entry-val 70 exit-time 10 poll-interval 1
-            action 1.0 syslog msg "CPU Utilization is high"
-            action 2.0 cli command "en"
-            action 2.5 cli command "show proc cpu sort | append flash:cpuinfo"
-            action 3.0 cli command "show proc cpu sort | append flash:cpuinfo"
-            action 4.0 cli command "show call active voice brief | append flash:cpuinfo"
-            action 5.0 cli command "show voip rtp connection | append flash:cpuinfo"
-            action 6.0 cli command "show log | append flash:cpuinfo"
-            action 7.0 cli command "show mem stat his | append flash:cpuinfo"
-            action 8.0 cli command "show proc cpu his | append flash:cpuinfo"
-            action 9.0 cli command "show align | append flash:cpuinfo"
+                event manager applet capture_cpu_spike
+                event snmp oid 1.3.6.1.4.1.9.2.1.56 get-type next entry-op ge entry-val 70 exit-time 10 poll-interval 1
+                action 1.0 syslog msg "CPU Utilization is high"
+                action 2.0 cli command "en"
+                action 2.5 cli command "show proc cpu sort | append flash:cpuinfo"
+                action 3.0 cli command "show proc cpu sort | append flash:cpuinfo"
+                action 4.0 cli command "show call active voice brief | append flash:cpuinfo"
+                action 5.0 cli command "show voip rtp connection | append flash:cpuinfo"
+                action 6.0 cli command "show log | append flash:cpuinfo"
+                action 7.0 cli command "show mem stat his | append flash:cpuinfo"
+                action 8.0 cli command "show proc cpu his | append flash:cpuinfo"
+                action 9.0 cli command "show align | append flash:cpuinfo"
 
 
             """
@@ -1582,7 +1589,7 @@ class Application(Frame):
 
             TEST TRANSLATION RULE 
 
-            test voice translation-rule 110 16172756959 
+               test voice translation-rule 110 16172756959 
 
 
             """
@@ -1594,12 +1601,12 @@ class Application(Frame):
 
             PACKET Capture 4400 routers
 
-            monitor capture TAC interface ... both 
-            monitor capture TAC match ipv4 any any 
-            monitor capture TAC start 
-            monitor capture TAC stop
-            monitor capture TAC clear
-            monitor capture TAC export flash:/filename.pcap 
+                monitor capture TAC interface ... both 
+                monitor capture TAC match ipv4 any any 
+                monitor capture TAC start 
+                monitor capture TAC stop
+                monitor capture TAC clear
+                monitor capture TAC export flash:/filename.pcap 
 
 
             """
@@ -1611,13 +1618,13 @@ class Application(Frame):
 
             ISR 4K PRI CLOCKING CONFIGURATION
 
-            network-clock synchronization participate <slot/subslot>  -  "(Need to remove this from the CLI (if we don't want to synch to the Backplane))"
-            network-clock input-source <priority> controller <t1/e1> <slow/subslot/port>  -  "(Most of the times we need to remove this from the CLI (if there) - could be used when the customer has two different providers)" 
-
-            network-clock synchronization automatic -  "(This is REQUIRED)"
-
-            controller t1 0/0/0
-            clock source line primary/secondary  -  "(This is REQUIRED)"
+                network-clock synchronization participate <slot/subslot>  -  "(Need to remove this from the CLI (if we don't want to synch to the Backplane))"
+                network-clock input-source <priority> controller <t1/e1> <slow/subslot/port>  -  "(Most of the times we need to remove this from the CLI (if there) - could be used when the customer has two different providers)" 
+    
+                network-clock synchronization automatic -  "(This is REQUIRED)"
+    
+                controller t1 0/0/0
+                clock source line primary/secondary  -  "(This is REQUIRED)"
 
 
             """
@@ -1629,10 +1636,10 @@ class Application(Frame):
 
             DSPFARM on 4k - uses the motherboard PVDM
 
-            voice-card 0/4
-            dsp services dspfarm 
-
-            the rest is like the usual DSP Farm configuration
+                voice-card 0/4
+                dsp services dspfarm 
+    
+                the rest is like the usual DSP Farm configuration
 
 
             """
@@ -1645,143 +1652,143 @@ class Application(Frame):
             CUE REGISTERED WITH CUCM (Only the CUE part of the configuration)
 
 
-            VNT-AIM-CUE1#show run
-            Generating configuration:
-
-
-            clock timezone America/New_York
-
-            hostname VNT-AIM-CUE1
-
-            ip domain-name cisco.com
-
-            ntp server 172.18.106.15
-
-            groupname Administrators create
-
-            username administrator create
-            username marschne create
-            username jdoe create
-            username marschne phonenumber "2104"
-            username jdoe phonenumber "2103"
-
-            groupname Administrators member administrator
-            groupname Administrators member marschne
-            groupname Administrators privilege superuser
-            groupname Administrators privilege ManagePrompts
-
-            backup server url "ftp://127.0.0.1/ftp" credentials hidden 
-            "EWlTygcMhYmjazXhE/VNXHCkplVV4KjescbDaLa4fl4WLSPFvv1rWUnfGWTYHfmPSd8ZZNgd+
-            Y9J3xlk2B35jwAAAAA="
-
-            ccn application autoattendant
-             description "autoattendant"
-             enabled
-             maxsessions 4
-             script "aa.aef"
-             parameter "MaxRetry" "3"
-             parameter "operExtn" "0"
-             parameter "welcomePrompt" "AAWelcome.wav"
-             end application
-
-            ccn application ciscomwiapplication
-             description "ciscomwiapplication"
-             enabled
-             maxsessions 4
-             script "setmwi.aef"
-             parameter "strMWI_OFF_DN" "8001"
-             parameter "strMWI_ON_DN" "8000"
-             parameter "CallControlGroupID" "0"
-             end application
-
-            ccn application promptmgmt
-             description "promptmgmt"
-             enabled
-             maxsessions 1
-             script "promptmgmt.aef"
-             end application
-
-            ccn application voicemail
-             description "voicemail"
-             enabled
-             maxsessions 4
-             script "voicebrowser.aef"
-             parameter "logoutUri" "http://localhost/voicemail/vxmlscripts/mbxLogout.jsp"
-             parameter "uri" "http://localhost/voicemail/vxmlscripts/login.vxml"
-             end application
-
-            ccn engine
-             end engine
-
-            ccn subsystem jtapi
-             ctiport 28001 28002 28003 28004 
-             ccm-manager address 14.80.227.127 14.80.227.128
-             ccm-manager credentials hidden "+DuGhIBvqsghj6p6aBUoRQ4E0vzCD5YHSd8ZZNgd+
-             Y9J3xlk2B35j0nfGWTYHfmPSd8ZZNgd+Y9J3xlk2B35jwAAAAA="
-             end subsystem
-
-            ccn subsystem sip
-             gateway address "172.18.106.105"
-             end subsystem
-
-            ccn trigger jtapi phonenumber 28000
-             application "voicemail"
-             enabled
-             locale "en_US"
-             maxsessions 4
-             end trigger
-
-            ccn trigger jtapi phonenumber 28100
-             application "autoattendant"
-             enabled
-             locale "en_US"
-             maxsessions 4
-             end trigger
-
-            ccn trigger jtapi phonenumber 28111
-             application "promptmgmt"
-             enabled
-             locale "en_US"
-             maxsessions 1
-             end trigger
-
-            ccn trigger sip phonenumber 28000
-             application "voicemail"
-             enabled
-             locale "en_US"
-             maxsessions 4
-             end trigger
-
-            ccn trigger sip phonenumber 28100
-             application "autoattendant"
-             enabled
-             locale "en_US"
-             maxsessions 4
-             end trigger
-
-            ccn trigger sip phonenumber 28111
-             application "promptmgmt"
-             enabled
-             locale "en_US"
-             maxsessions 1
-             end trigger
-
-            voicemail default expiration time 30
-            voicemail default language en_US
-            voicemail default mailboxsize 420
-            voicemail recording time 900
-            voicemail default messagesize 60
-            voicemail operator telephone 0
-            voicemail capacity time 480
-            voicemail mailbox owner "jdoe" size 420
-             description "jdoe mailbox"
-             end mailbox
-
-            voicemail mailbox owner "marschne" size 420
-             description "marschne mailbox"
-             end mailbox
-
-            end
+                VNT-AIM-CUE1#show run
+                Generating configuration:
+    
+    
+                clock timezone America/New_York
+    
+                hostname VNT-AIM-CUE1
+    
+                ip domain-name cisco.com
+    
+                ntp server 172.18.106.15
+    
+                groupname Administrators create
+    
+                username administrator create
+                username marschne create
+                username jdoe create
+                username marschne phonenumber "2104"
+                username jdoe phonenumber "2103"
+    
+                groupname Administrators member administrator
+                groupname Administrators member marschne
+                groupname Administrators privilege superuser
+                groupname Administrators privilege ManagePrompts
+    
+                backup server url "ftp://127.0.0.1/ftp" credentials hidden 
+                "EWlTygcMhYmjazXhE/VNXHCkplVV4KjescbDaLa4fl4WLSPFvv1rWUnfGWTYHfmPSd8ZZNgd+
+                Y9J3xlk2B35jwAAAAA="
+    
+                ccn application autoattendant
+                 description "autoattendant"
+                 enabled
+                 maxsessions 4
+                 script "aa.aef"
+                 parameter "MaxRetry" "3"
+                 parameter "operExtn" "0"
+                 parameter "welcomePrompt" "AAWelcome.wav"
+                 end application
+    
+                ccn application ciscomwiapplication
+                 description "ciscomwiapplication"
+                 enabled
+                 maxsessions 4
+                 script "setmwi.aef"
+                 parameter "strMWI_OFF_DN" "8001"
+                 parameter "strMWI_ON_DN" "8000"
+                 parameter "CallControlGroupID" "0"
+                 end application
+    
+                ccn application promptmgmt
+                 description "promptmgmt"
+                 enabled
+                 maxsessions 1
+                 script "promptmgmt.aef"
+                 end application
+    
+                ccn application voicemail
+                 description "voicemail"
+                 enabled
+                 maxsessions 4
+                 script "voicebrowser.aef"
+                 parameter "logoutUri" "http://localhost/voicemail/vxmlscripts/mbxLogout.jsp"
+                 parameter "uri" "http://localhost/voicemail/vxmlscripts/login.vxml"
+                 end application
+    
+                ccn engine
+                 end engine
+    
+                ccn subsystem jtapi
+                 ctiport 28001 28002 28003 28004 
+                 ccm-manager address 14.80.227.127 14.80.227.128
+                 ccm-manager credentials hidden "+DuGhIBvqsghj6p6aBUoRQ4E0vzCD5YHSd8ZZNgd+
+                 Y9J3xlk2B35j0nfGWTYHfmPSd8ZZNgd+Y9J3xlk2B35jwAAAAA="
+                 end subsystem
+    
+                ccn subsystem sip
+                 gateway address "172.18.106.105"
+                 end subsystem
+    
+                ccn trigger jtapi phonenumber 28000
+                 application "voicemail"
+                 enabled
+                 locale "en_US"
+                 maxsessions 4
+                 end trigger
+    
+                ccn trigger jtapi phonenumber 28100
+                 application "autoattendant"
+                 enabled
+                 locale "en_US"
+                 maxsessions 4
+                 end trigger
+    
+                ccn trigger jtapi phonenumber 28111
+                 application "promptmgmt"
+                 enabled
+                 locale "en_US"
+                 maxsessions 1
+                 end trigger
+    
+                ccn trigger sip phonenumber 28000
+                 application "voicemail"
+                 enabled
+                 locale "en_US"
+                 maxsessions 4
+                 end trigger
+    
+                ccn trigger sip phonenumber 28100
+                 application "autoattendant"
+                 enabled
+                 locale "en_US"
+                 maxsessions 4
+                 end trigger
+    
+                ccn trigger sip phonenumber 28111
+                 application "promptmgmt"
+                 enabled
+                 locale "en_US"
+                 maxsessions 1
+                 end trigger
+    
+                voicemail default expiration time 30
+                voicemail default language en_US
+                voicemail default mailboxsize 420
+                voicemail recording time 900
+                voicemail default messagesize 60
+                voicemail operator telephone 0
+                voicemail capacity time 480
+                voicemail mailbox owner "jdoe" size 420
+                 description "jdoe mailbox"
+                 end mailbox
+    
+                voicemail mailbox owner "marschne" size 420
+                 description "marschne mailbox"
+                 end mailbox
+    
+                end
 
 
             """
@@ -1793,8 +1800,8 @@ class Application(Frame):
 
             ACCEPT UCK9 LICENSE ON 4K ROUTERS
 
-            license accept end user agreement 
-            license boot level uck9
+                license accept end user agreement 
+                license boot level uck9
 
 
             """
@@ -1807,84 +1814,84 @@ class Application(Frame):
 
             CUE to EMAIL notification
 
-            1)Go to voicemail->Message Notification->Notification Administration
-
-            -Make sure "Enable system-wide notification for" is checked, and set for
-            "All Messages"
-
-            -Check "Allow user to login to voicemail box to retrieve voicemail when
-            phone notification device is notified."
-
-            -Check "Attach voice messages to email notification messages." Click Apply
-
-            2)Go to System -> Domain name settings -> set your domain name
-            (mycompany.com) (this is a big one, this needs to be set)
-
-            3)Go to System -> Domain name settings -> set your DNS server if you
-            have one. Click Apply
-
-            4)Go to System -> SMTP Settings -> Set your SMTP server address, as well
-            as any authentication if needed. Click Apply
-
-            5) Go to Configure -> User -> choose user -> check the "Enable notification for
-            this user" box at bottom of the screen. Click Apply
-
-            6) Go to Configure -> User -> notification tab -> click on "email inbox"
-
-            -Input the users email address
-            -Input a subject text for the email
-            -Check box "Enable notification to this device "
-            -Check box "Attach voice message to email notification messages."
-            -Change "Notification Preference" to "All Messages"
-            -Set up the Notification schedule, these are the hours that e-mails will be
-            sent. Click Apply
-
-            7) On the UC520 router, set your "domain-name" and "ip name-server".
-
-            Ping the smtp server from the CUE.
-
-
-
-            summary of the steps to do this from the CLI, maybe could be usefull.
-
-            To log into CUE from CME:
-            #session Service-Engine1/0 session
-
-            Configuring an SMTP Server
-            1. config t
-            2. smtp server address {hostname | ip-address}
-            3. end
-
-            Configuring System-Wide Settings
-            1. config t
-            2. voicemail notification enable
-            3. voicemail notification preference {all | urgent}
-            4. voicemail notification email attach
-            5. voicemail configuration outgoing-email from-address <email-address>
-            6. end
-
-            Enabling Message Notification for a Subscriber
-            1. config t
-            2. voicemail notification owner owner-id enable
-
-            Configuring Message Notification for E-mail
-            1. enable mode
-            2. username username profile vm-notif-profile email address email-address
-            3. username username profile vm-notif-profile email enable
-            4. username username profile vm-notif-profile email attach
-            5. username username profile vm-notif-profile email preference {all |
-            urgent}
-            6. username username profile vm-notif-profile email schedule day
-            <day-of-week> active from <hh:mm> to <hh:mm>
-            7. username username profile vm-notif-profile email text <email-text>
-
-            To check configuration:
-            1. show smtp server
-            2. show voicemail configuration
-            3. show voicemail notification
-            4. show voicemail notification restriction-table
-            5. show voicemail notification owner owner-id profile
-            6. show voicemail notification owner owner-id email 
+                1)Go to voicemail->Message Notification->Notification Administration
+    
+                -Make sure "Enable system-wide notification for" is checked, and set for
+                "All Messages"
+    
+                -Check "Allow user to login to voicemail box to retrieve voicemail when
+                phone notification device is notified."
+    
+                -Check "Attach voice messages to email notification messages." Click Apply
+    
+                2)Go to System -> Domain name settings -> set your domain name
+                (mycompany.com) (this is a big one, this needs to be set)
+    
+                3)Go to System -> Domain name settings -> set your DNS server if you
+                have one. Click Apply
+    
+                4)Go to System -> SMTP Settings -> Set your SMTP server address, as well
+                as any authentication if needed. Click Apply
+    
+                5) Go to Configure -> User -> choose user -> check the "Enable notification for
+                this user" box at bottom of the screen. Click Apply
+    
+                6) Go to Configure -> User -> notification tab -> click on "email inbox"
+    
+                -Input the users email address
+                -Input a subject text for the email
+                -Check box "Enable notification to this device "
+                -Check box "Attach voice message to email notification messages."
+                -Change "Notification Preference" to "All Messages"
+                -Set up the Notification schedule, these are the hours that e-mails will be
+                sent. Click Apply
+    
+                7) On the UC520 router, set your "domain-name" and "ip name-server".
+    
+                Ping the smtp server from the CUE.
+    
+    
+    
+                summary of the steps to do this from the CLI, maybe could be usefull.
+    
+                To log into CUE from CME:
+                #session Service-Engine1/0 session
+    
+                Configuring an SMTP Server
+                1. config t
+                2. smtp server address {hostname | ip-address}
+                3. end
+    
+                Configuring System-Wide Settings
+                1. config t
+                2. voicemail notification enable
+                3. voicemail notification preference {all | urgent}
+                4. voicemail notification email attach
+                5. voicemail configuration outgoing-email from-address <email-address>
+                6. end
+    
+                Enabling Message Notification for a Subscriber
+                1. config t
+                2. voicemail notification owner owner-id enable
+    
+                Configuring Message Notification for E-mail
+                1. enable mode
+                2. username username profile vm-notif-profile email address email-address
+                3. username username profile vm-notif-profile email enable
+                4. username username profile vm-notif-profile email attach
+                5. username username profile vm-notif-profile email preference {all |
+                urgent}
+                6. username username profile vm-notif-profile email schedule day
+                <day-of-week> active from <hh:mm> to <hh:mm>
+                7. username username profile vm-notif-profile email text <email-text>
+    
+                To check configuration:
+                1. show smtp server
+                2. show voicemail configuration
+                3. show voicemail notification
+                4. show voicemail notification restriction-table
+                5. show voicemail notification owner owner-id profile
+                6. show voicemail notification owner owner-id email 
 
 
             """
@@ -1896,7 +1903,7 @@ class Application(Frame):
 
             VRF with SIP or H323
 
-            voice vrf <vrf name>
+                voice vrf <vrf name>
 
 
             """
@@ -1908,20 +1915,20 @@ class Application(Frame):
 
             BEFORE DEBUGGING 
 
-            service sequence-numbers
-            service timestamps debug datetime localtime msec
-            logging buffered 10000000 debugging
-            no logging console
-            no logging monitor 
-            clear log 
-
-
-            SENDINDG DEBUGS TO A SYSLOG SERVER
-            
-            service sequence-numbers
-            service timestamps debug datetime localtime msec
-            logging host <syslog server> transport <type> port <port>
-            logging trap debug 
+                service sequence-numbers
+                service timestamps debug datetime localtime msec
+                logging buffered 10000000 debugging
+                no logging console
+                no logging monitor 
+                clear log 
+    
+    
+                SENDINDG DEBUGS TO A SYSLOG SERVER
+                
+                service sequence-numbers
+                service timestamps debug datetime localtime msec
+                logging host <syslog server> transport <type> port <port>
+                logging trap debug 
 
 
             """
@@ -1929,35 +1936,99 @@ class Application(Frame):
             T.insert(END, collect_debug_properly)
 
         elif user_choice == "Upgrade DSP Firmware":
-            collect_debug_properly = """
+            dsp_upgrade = """
 
-            BEFORE DEBUGGING 
+            UPGRADE DSP FIRMWARE
+             
+            
+                We have successfully upgraded the dsp firmware using below procedure:
+                
+                ++ Copy the upgrade firmware file into router flash:core/modules/dsp_sp2700_fw.img
+                
+                Kevin_O2_144#dir core/modules       
+                Directory of bootflash:core/modules/          
+                908545  -rw-          3409374  Feb 25 2015 19:31:08 +00:00  dsp_sp2700_fw.img
+                             
+                
+                ++ Session into module on MB (slot 0/4):          
+                
+                hw-module session 0/4
+               
+                Or
+                
+                ++ Session into module on Fortitude (slot 0/x)             
+                
+                hw-module session 0/x end 1
+                            
+                ++ Under module console, issue 'reload' to reload the module
+                
+                SP27XX> reload
+                   
+                ++ Then hit <CTRL-C> to stop boot loading. You should see 'BLDR>' prompt.
+                
+                               
+                Cisco NGVM Golden Bootloader            
+                version 34.0.106, built on Oct 23 2012:12:44:16                 
+                 Reading env from 0x30000                
+                Environment found with chksum 0xba250000                
+                Loading upgrade bldr...                
+                  sha512 selftest passed!!!                
+                  rsa2048 self test passed!!!                
+                  RSA Signed DEVELOPMENT Image Signature Verification Successful.                
+                Cisco NGVM Upgrade Bootloader                
+                version 34.0.106, built on Oct 23 2012:12:44:18                
+                Reading env from 0x30000                
+                Environment found with chksum 0xba250000                
+                TFTP_FILE: firmware/dsp_sp2700_fw.img                
+                Send DHCP discover...                
+                CHIPID = 0x20000018                
+                MAC0 SRC Address:0x0:0x22:0xbd:0xf1:0x41:0x4c                
+                Enter <CTR-C> to stop boot loading                
+                Boot interrupted!                 
+                
+                ++ Type 'set' to check the environment variables.
+                              
+                BLDR> set              
+                MAC0=00:22:bd:f1:41:4c               
+                PID=PVDM4-256                
+                IP_ADDRESS=0.0.0.0                
+                TFTP_SERVER=0.0.0.0                
+                DDR3_CONFIG=0x1              
+                TFTP_FILE=firmware/dsp_sp2700_fw.img                
+                GOLDEN_BLDR=0
+                              
+                ++ Change TFTP_FILE to inv/core/dsp_sp2700_fw.img. Note that you need to copy the upgrade firmware into router flash:core/modules/dsp_sp2700_fw.img.
+                                
+                BLDR> TFTP_FILE=inv/core/dsp_sp2700_fw.img             
+                Type 'sync' to save the new setting.                
+                BLDR> sync                
+                 Writing env to 0x30000                 
+                
+                ++ Type 'reload' to reboot the module.
+                                
+                BLDR> reload                
+                Cisco NGVM Golden Bootloader                
+                version 34.0.106, built on Oct 23 2012:12:44:16
+                                
+                ++ Under IOS, check the new firmware file version.
+                                
+                Kevin_O2_144#show plat soft subslot 0/4 module firmware               
+                Firmware Version 37.3.925, built on Feb 25 2015:12:47:19 from kctsai-eplus                
+                NGIO Version ngio@xe313_throttle/9
 
-            service sequence-numbers
-            service timestamps debug datetime localtime msec
-            logging buffered 10000000 debugging
-            no logging console
-            no logging monitor 
-            clear log 
-
-
-            SENDINDG DEBUGS TO SERVER
-            +
-            logging host <syslog server> transport <type> port <port>
-            logging trap debug 
 
 
             """
 
-            T.insert(END, collect_debug_properly)
+            T.insert(END, dsp_upgrade)
 
         elif user_choice == "Reset DSP":
             dsp_reset = """
 
             TEST COMMANDS (This doesn't work on 4K routers)
 
-            test voice driver  -  "(Hidden command for older IOS and DSP)"
-            test dsp device all all reset  -  "(For newer IOS)"
+                test voice driver  -  "(Hidden command for older IOS and DSP)"
+                test dsp device all all reset  -  "(For newer IOS)"
 
 
             """
@@ -1968,23 +2039,23 @@ class Application(Frame):
 
             MODEM PASSTHROUGH WITH SIP AND SCCP/MGCP GAETWAYS
 
-            Call flows:
-            VG224 --- SCCP --- CUCM --- SIP --- 3900 --- PRI --- PSTN
-            VG224 --- MGCP --- CUCM --- H323 --- 3900 --- PRI --- PSTN
-
-            In the above call flows, fax or modem switchover will not happen if you have the following configuration:
-
-            dial-peer voice 1 voip
-             modem passthrough nse codec g711ulaw
-
-            This is due to NSE capability mismatch in the SIP SDP, since CUCM is not aware of NSE. 
-
-            The solution / workaround is to use the following configuration:
-
-            dial-peer voice 1 voip
-             modem relay nse codec g711ulaw gw-controlled 
-
-            For further details refer to: http://cdetsweb-prd.cisco.com/apps/dumpcr?identifier=CSCsr89830 
+                Call flows:
+                VG224 --- SCCP --- CUCM --- SIP --- 3900 --- PRI --- PSTN
+                VG224 --- MGCP --- CUCM --- H323 --- 3900 --- PRI --- PSTN
+    
+                In the above call flows, fax or modem switchover will not happen if you have the following configuration:
+    
+                dial-peer voice 1 voip
+                 modem passthrough nse codec g711ulaw
+    
+                This is due to NSE capability mismatch in the SIP SDP, since CUCM is not aware of NSE. 
+    
+                The solution / workaround is to use the following configuration:
+    
+                dial-peer voice 1 voip
+                 modem relay nse codec g711ulaw gw-controlled 
+    
+                For further details refer to: http://cdetsweb-prd.cisco.com/apps/dumpcr?identifier=CSCsr89830 
 
 
             """
@@ -2062,81 +2133,81 @@ class Application(Frame):
             
             VOICEVIEW EXPRESS EXAMPLE CONFIGURATION
             
-            url authentication http://192.168.130.19/voiceview/authentication/authenticate.do
-            url services http://192.168.130.19/voiceview/common/login.do
-            
-            CUE configuration:
-            1. conf t
-            2. service voiceview
-            3. enable
-            4. session idletimeout 10
-            5. end
-            6. end
-            7. (Optional) show voiceview configuration
-            8. (Optional) show voiceview sessions
-            ====================================
-            1. conf t
-            2. site name local
-            3. phone-authentication username admin password cisco
-            4. end
-            5. show phone-authentication configuration
-            ====================================
-            conf t
-            service phone-authentication
-            fallback-url http://192.168.130.18/CCMCIP/authenticate.asp
-            
-            "Add the credentials for CME and CME IP in CUE GUI - the same configured under "telephony-service" (web admin system name admin password cisco)"
-            
-            ++++++++++++++++++++++++++++++++++++++++++++
-            
-            CME Configuration:
-            
-            CME GUI should be enabled
-            
-            conf t
-            telephony-service
-            authentication credential admin cisco
-            service phone webAccess 0
-            url services http://192.168.130.19/voiceview/common/login.do
-            url authentication http://192.168.130.19/voiceview/authentication/authenticate.do
-            voicemail 6000
-            web admin system name admin password cisco
-
-            This configuraiton will run an automatic capture when IP SLA to certain device goes down. 
-            The packet capture will run for 5 minutes and will be saved on the flash: after that.
-            Please keep in mind that an EEM script needs minimum of 2 TTY lines available in order to work:
-
-                ip sla 1
-                icmp echo <Device IP address> source-interface gigabitethernet 0/1
-                exit
-                track 1 ip sla 1 reachability
-                exit
-                ip sla schedule 1 life forever start-time now
-
-                track 100 list boolean or
-                object 1
-
-                event manager applet CAPTURE_1
-                 event track 100 state down maxrun 350
-                 action 01 cli command "enable"
-                 action 02 cli command "conf t"
-                 action 03 cli command "ip access-list extended CAP-FILTER"
-                 action 04 cli command "permit ip any any"
-                 action 05 cli command "end"
-                 action 06 cli command "monitor capture buffer CAP-BUF size 102400 max-size 1514"
-                 action 07 cli command "monitor capture buffer CAP-BUF filter access-list CAP-FILTER"
-                 action 08 cli command "monitor capture point ip process-switched CAP-POINT both"
-                 action 09 cli command "monitor capture point associate CAP-POINT CAP-BUF"
-                 action 10 cli command "monitor capture point start CAP-POINT"
-                 action 11 wait 320
-                 action 12 cli command "monitor capture point stop CAP-POINT"
-                 action 13 cli command "monitor capture buffer CAP-BUF export flash:BUF.pcap" pattern "BUF.pcap"
-                 action 14 cli command "" pattern "confirm"
-
-
-            Troubleshooting the EEM script:
-
-            debug event manager action cli
+                url authentication http://192.168.130.19/voiceview/authentication/authenticate.do
+                url services http://192.168.130.19/voiceview/common/login.do
+                
+                CUE configuration:
+                1. conf t
+                2. service voiceview
+                3. enable
+                4. session idletimeout 10
+                5. end
+                6. end
+                7. (Optional) show voiceview configuration
+                8. (Optional) show voiceview sessions
+                ====================================
+                1. conf t
+                2. site name local
+                3. phone-authentication username admin password cisco
+                4. end
+                5. show phone-authentication configuration
+                ====================================
+                conf t
+                service phone-authentication
+                fallback-url http://192.168.130.18/CCMCIP/authenticate.asp
+                
+                "Add the credentials for CME and CME IP in CUE GUI - the same configured under "telephony-service" (web admin system name admin password cisco)"
+                
+                ++++++++++++++++++++++++++++++++++++++++++++
+                
+                CME Configuration:
+                
+                CME GUI should be enabled
+                
+                conf t
+                telephony-service
+                authentication credential admin cisco
+                service phone webAccess 0
+                url services http://192.168.130.19/voiceview/common/login.do
+                url authentication http://192.168.130.19/voiceview/authentication/authenticate.do
+                voicemail 6000
+                web admin system name admin password cisco
+    
+                This configuraiton will run an automatic capture when IP SLA to certain device goes down. 
+                The packet capture will run for 5 minutes and will be saved on the flash: after that.
+                Please keep in mind that an EEM script needs minimum of 2 TTY lines available in order to work:
+    
+                    ip sla 1
+                    icmp echo <Device IP address> source-interface gigabitethernet 0/1
+                    exit
+                    track 1 ip sla 1 reachability
+                    exit
+                    ip sla schedule 1 life forever start-time now
+    
+                    track 100 list boolean or
+                    object 1
+    
+                    event manager applet CAPTURE_1
+                     event track 100 state down maxrun 350
+                     action 01 cli command "enable"
+                     action 02 cli command "conf t"
+                     action 03 cli command "ip access-list extended CAP-FILTER"
+                     action 04 cli command "permit ip any any"
+                     action 05 cli command "end"
+                     action 06 cli command "monitor capture buffer CAP-BUF size 102400 max-size 1514"
+                     action 07 cli command "monitor capture buffer CAP-BUF filter access-list CAP-FILTER"
+                     action 08 cli command "monitor capture point ip process-switched CAP-POINT both"
+                     action 09 cli command "monitor capture point associate CAP-POINT CAP-BUF"
+                     action 10 cli command "monitor capture point start CAP-POINT"
+                     action 11 wait 320
+                     action 12 cli command "monitor capture point stop CAP-POINT"
+                     action 13 cli command "monitor capture buffer CAP-BUF export flash:BUF.pcap" pattern "BUF.pcap"
+                     action 14 cli command "" pattern "confirm"
+    
+    
+                Troubleshooting the EEM script:
+    
+                debug event manager action cli
             
             
                     """
@@ -2255,13 +2326,13 @@ class Application(Frame):
 
             SPAN PORT CONFIGURATION ON THE SWITCH (FOR COLLECTING PACKET CAPTURE FROM A PHONE)            
              
-            conf t
-            monitor session 1 source interface g1/0/32 both            
-            monitor session 1 destination interface g5/0/41
-                                     
-            Disable with             
-                         
-            no monitor session 1 destination interface g5/0/41
+                conf t
+                monitor session 1 source interface g1/0/32 both            
+                monitor session 1 destination interface g5/0/41
+                                         
+                Disable with             
+                             
+                no monitor session 1 destination interface g5/0/41
 
 
                     """
@@ -2274,88 +2345,88 @@ class Application(Frame):
             LPCOR CONFIGURATION
 
             
-            sh run | sec aaa            
-            aaa new-model           
-            aaa authentication login h323 local            
-            aaa authorization exec h323 local            
-            aaa authorization network h323 local            
-            aaa accounting connection h323            
-            aaa session-id common            
-            gw-accounting aaa
-                                                 
-                                                                                     
-            username 1111 password 0 1111
-            username 2222 password 0 2222
-                         
-                         
-            voice lpcor enable            
-            voice lpcor custom            
-            group 10 PRI            
-            voice lpcor policy PRI            
-            service fac            
-            accept PRI fac                        
-             
-            *** We need this config under "application" and  "package auth". Check if the files "enter_pin.au" and "enter_account.au" are on the flash ***
-            
-            application           
-            package auth            
-              param max-digit 5            
-              param max-retries 3            
-              param passwd-prompt flash:enter_pin.au            
-              param user-prompt flash:enter_account.au            
-              param abort-digit *            
-              param term-digit #            
-             
-            
-            *** Check for trunk config with lpcor assigned ***
-                       
-            trunk group PRI           
-            lpcor outgoing PRI
-            
-            
-            *** Make shure we have configured  "trunk-group PRI" under Serial interface and "trunkgroup PRI" under the dial-peer.***
-                        
-            interface Serial0/0/0:23            
-            no ip address            
-            encapsulation hdlc            
-            isdn switch-type primary-ni            
-            isdn protocol-emulate network            
-            isdn incoming-voice voice            
-            trunk-group PRI            
-            no cdp tlv app
-            
-            
-            dial-peer voice 9 pots            
-            trunkgroup PRI            
-            destination-pattern ^10$            
-            forward-digits all
-            
-            
-            *** Add the LPCOR configuration under the ephone profile *****
-                        
-            ephone  1            
-            lpcor type local            
-            lpcor incoming PRI            
-            description YU CIPC            
-            mac-address 507B.9DA2.F72D            
-            type CIPC            
-            button  1:1            
-                         
-            ** Add the LPCOR configuration under the voice register pool profile ***
-            
-                         
-            voice register pool  1            
-            lpcor type local            
-            lpcor incoming PRI            
-            busy-trigger-per-button 2            
-            id mac 009E.1EDE.A297            
-            type 7841            
-            number 1 dn 1            
-            number 2 dn 2            
-            dtmf-relay rtp-nte sip-notify            
-            username cusco password adg            
-            codec g711ulaw            
-            no vad
+                sh run | sec aaa            
+                aaa new-model           
+                aaa authentication login h323 local            
+                aaa authorization exec h323 local            
+                aaa authorization network h323 local            
+                aaa accounting connection h323            
+                aaa session-id common            
+                gw-accounting aaa
+                                                     
+                                                                                         
+                username 1111 password 0 1111
+                username 2222 password 0 2222
+                             
+                             
+                voice lpcor enable            
+                voice lpcor custom            
+                group 10 PRI            
+                voice lpcor policy PRI            
+                service fac            
+                accept PRI fac                        
+                 
+                *** We need this config under "application" and  "package auth". Check if the files "enter_pin.au" and "enter_account.au" are on the flash ***
+                
+                application           
+                package auth            
+                  param max-digit 5            
+                  param max-retries 3            
+                  param passwd-prompt flash:enter_pin.au            
+                  param user-prompt flash:enter_account.au            
+                  param abort-digit *            
+                  param term-digit #            
+                 
+                
+                *** Check for trunk config with lpcor assigned ***
+                           
+                trunk group PRI           
+                lpcor outgoing PRI
+                
+                
+                *** Make shure we have configured  "trunk-group PRI" under Serial interface and "trunkgroup PRI" under the dial-peer.***
+                            
+                interface Serial0/0/0:23            
+                no ip address            
+                encapsulation hdlc            
+                isdn switch-type primary-ni            
+                isdn protocol-emulate network            
+                isdn incoming-voice voice            
+                trunk-group PRI            
+                no cdp tlv app
+                
+                
+                dial-peer voice 9 pots            
+                trunkgroup PRI            
+                destination-pattern ^10$            
+                forward-digits all
+                
+                
+                *** Add the LPCOR configuration under the ephone profile *****
+                            
+                ephone  1            
+                lpcor type local            
+                lpcor incoming PRI            
+                description YU CIPC            
+                mac-address 507B.9DA2.F72D            
+                type CIPC            
+                button  1:1            
+                             
+                ** Add the LPCOR configuration under the voice register pool profile ***
+                
+                             
+                voice register pool  1            
+                lpcor type local            
+                lpcor incoming PRI            
+                busy-trigger-per-button 2            
+                id mac 009E.1EDE.A297            
+                type 7841            
+                number 1 dn 1            
+                number 2 dn 2            
+                dtmf-relay rtp-nte sip-notify            
+                username cusco password adg            
+                codec g711ulaw            
+                no vad
  
  
                     """
@@ -2368,83 +2439,84 @@ class Application(Frame):
             EXTENSION MOBILITY FOR SIP AND SCCP PHONES
             
 
-            SIP EM 
-            
-            ip http server            
-            voice register global            
-              url authentication http://CME_IP/CCMCIP/authenticate.asp
-            
-                         
-            voice logout-profile 1            
-            user cisco password adj            
-            number 100
-            
-                                     
-            "Even though the dn will not be assigned anywhere, it needs to be created. If the dn is missing, you'd still be able to log in the user profile, but the phone will not have a number."
-            
-            voice register dn  1            
-            number 100
-                                     
-            voice register pool  1           
-            logout-profile 1            
-            id mac F8A5.C59D.DB3C            
-            type 8851            
-            dtmf-relay rtp-nte            
-            codec g711ulaw            
-            no vad
-                                     
-            voice user-profile 1            
-            user cisco password adj            
-            number 101
-                                     
-            voice register dn  2            
-            number 101
-                                     
-            voice register global            
-            create profile
-            
-                                                  
-            SCCP EM
-                         
-            
-            ip http server
-                                     
-            telephony-service            
-            authentication credential test test            
-            max-ephones 10            
-            max-dn 10            
-            ip source-address 10.63.105.36 port 2000            
-            service phone webAccess 0            
-            url authentication http://CME_IP/CCMCIP/authenticate.asp test test
-                                     
-            voice logout-profile 2            
-            user cisco password cisco            
-            number 200
-                                     
-            ephone-dn  1            
-            number 200
-                                     
-            ephone  1            
-            mac-address 94D4.692A.220C            
-            type 7965           
-            logout-profile 2
-                                   
-            voice user-profile 2           
-            user panda password adj           
-            number 201
-                                     
-            ephone-dn  2            
-            number 201
-                                    
-            telephony-service           
-            create cnf-files
-            
-                                                  
-            "A user can log into a SIP and SCCP phone as long as the number for the user-profile has voice register dn an ephone-dn configured.                                    
-            The SIP config can work without the SCCP config and vice versa."
-                                    
-                                     
-            "Admin guide for EM - https://www.cisco.com/c/en/us/td/docs/voice_ip_comm/cucme/admin/configuration/manual/cmeadm/cmemobl.html"
+                SIP EM 
+                
+                ip http server            
+                voice register global            
+                  url authentication http://CME_IP/CCMCIP/authenticate.asp
+                
+                             
+                voice logout-profile 1            
+                user cisco password adj            
+                number 100
+                
+                                         
+                "Even though the dn will not be assigned anywhere, it needs to be created. If the dn is missing, you'd still be able to log in the user profile, but the phone will not have a number."
+                
+                voice register dn  1            
+                number 100
+                                         
+                voice register pool  1           
+                logout-profile 1            
+                id mac F8A5.C59D.DB3C            
+                type 8851            
+                dtmf-relay rtp-nte            
+                codec g711ulaw            
+                no vad
+                                         
+                voice user-profile 1            
+                user cisco password adj            
+                number 101
+                                         
+                voice register dn  2            
+                number 101
+                                         
+                voice register global            
+                create profile
+                
+                                                      
+                SCCP EM
+                             
+                
+                ip http server
+                                         
+                telephony-service            
+                authentication credential test test            
+                max-ephones 10            
+                max-dn 10            
+                ip source-address 10.63.105.36 port 2000            
+                service phone webAccess 0            
+                url authentication http://CME_IP/CCMCIP/authenticate.asp test test
+                                         
+                voice logout-profile 2            
+                user cisco password cisco            
+                number 200
+                                         
+                ephone-dn  1            
+                number 200
+                                         
+                ephone  1            
+                mac-address 94D4.692A.220C            
+                type 7965           
+                logout-profile 2
+                                       
+                voice user-profile 2           
+                user panda password adj           
+                number 201
+                                         
+                ephone-dn  2            
+                number 201
+                                        
+                telephony-service           
+                create cnf-files
+                
+                                                      
+                "A user can log into a SIP and SCCP phone as long as the number for the user-profile has voice register dn an ephone-dn configured.
+                The SIP config can work without the SCCP config and vice versa."
+                                        
+                                         
+                "Admin guide for EM - https://www.cisco.com/c/en/us/td/docs/voice_ip_comm/cucme/admin/configuration/manual/cmeadm/cmemobl.html"
+
 
 
                     """
@@ -2456,36 +2528,258 @@ class Application(Frame):
 
             CONFIGURING AN ACCESS LIST ON A SWITCH FOR TESTING OUT SRST FOR SINGLE OR MULTIPLE PHONES            
 
-            10.56.1.1  -  "(Phone)"
-            10.51.17.100  -  "(CUCM)"        
-            10.51.17.101  -  "(CUCM 2)"
-            
-            "130 is the phone's voice vlan"
-            
-            ----                        
-            
-            ip access-list extended SRST            
-            permit ip host 10.56.1.1 host 10.51.17.100            
-            permit ip host 10.56.1.1 host 10.51.17.101                         
-            
-            permit ip host 10.51.17.100 host 10.56.1.1            
-            permit ip host 10.51.17.101 host 10.56.1.1
+                10.56.1.1  -  "(Phone)"
+                10.51.17.100  -  "(CUCM)"        
+                10.51.17.101  -  "(CUCM 2)"
+                
+                "130 is the phone's voice vlan"
+                
+                ----                        
+                
+                ip access-list extended SRST            
+                permit ip host 10.56.1.1 host 10.51.17.100            
+                permit ip host 10.56.1.1 host 10.51.17.101                         
+                
+                permit ip host 10.51.17.100 host 10.56.1.1            
+                permit ip host 10.51.17.101 host 10.56.1.1
+                                         
+                vlan access-map block 10            
+                match ip address SRST           
+                action drop
+                                         
+                vlan access-map block 20            
+                action forward
+                                         
+                vlan filter block vlan-list 130
                                      
-            vlan access-map block 10            
-            match ip address SRST           
-            action drop
-                                     
-            vlan access-map block 20            
-            action forward
-                                     
-            vlan filter block vlan-list 130
-                                     
-            ----
                                      
 
 
                     """
             T.insert(END, access_list_srst)
+
+        elif user_choice == "cBarge Configuration":
+            cbarge_config = """
+
+            CBARGE CONFIGURATION FOR SIP AND SCCP PHONES
+        
+ 
+                SCCP PHONES
+                                
+                Restriction:
+                
+                    Supported only on octo-line directory numbers.          
+                    Not supported for meet-me conferences.               
+                    Not supported if phone user is already connected to the same ad hoc conference on the octo-line.
+                                
+                
+                Before You Begin
+                
+                    Cisco Unified CME 7.0 or a later version.               
+                    Octo-line directory number is configured. See Create Directory Numbers for SCCP Phones.               
+                    Privacy is disabled on the phone. See Privacy and Privacy on Hold.               
+                    Ad hoc hardware conference resource is configured and ready to use. See Configure Conferencing.                
+                    Join and leave tones for hardware conference can be configured as barge entrance and exit tones. See Configure Join and Leave Tones on SCCP Phones.
+                                 
+                
+                SUMMARY STEPS                
+                
+                    1.    enable
+                    2.    configure terminal
+                    3.    ephone-template template-tag
+                    4.    softkeys remote-in-use {[CBarge] [Newcall]}
+                    5.    exit
+                    6.    ephone phone-tag
+                    7.    ephone-template template-tag
+                    8.    end
+                
+                       
+                
+                SIP PHONES
+                                
+                Restriction:
+                
+                    Supported only on shared lines.
+                
+                
+                Before You Begin:
+                
+                    Cisco Unified CME 7.1 or a later version.                
+                    Shared directory number is configured. See Create Directory Numbers for SIP Phones.                
+                    Ad hoc hardware conference resource is configured and ready to use. See Configure Conferencing.                 
+                    Join and leave tones for hardware conference can be configured as barge entrance and exit tones. See Configure Join and Leave Tones on SCCP Phones in the Cisco Unified CME System Administrator Guide.                  
+                    For Barge and cBarge to work, privacy needs to be disabled under voice register global using the command no privacy. For configuring Privacy, See Enable Privacy and Privacy on Hold on SIP Phones.
+                
+                                 
+                SUMMARY STEPS
+                
+                    1.    enable
+                    2.    configure terminal
+                    3.    voice register template template-tag
+                    4.    softkeys remote-in-use {[Barge] [Newcall] [cBarge]}
+                    5.    exit
+                    6.    voice register pool phone-tag
+                    7.    template template-tag
+                    8.    end
+            
+            
+
+
+                    """
+            T.insert(END, cbarge_config)
+
+
+        elif user_choice == "Loopback-DN":
+            loopback_dn = """
+
+            LOOPBACK-DN CONFIGURATION
+
+
+                An incoming call to extension 261 would first try with the original extension, which is assigned under an "ephone" profile. If the CME realizes that the "ephone" is unregistered and that the original dial-peer for it is “down” as well, it will try with our Loopback DN (the system dial-peer for our Loopback DN should be “up”). Once the call hits our Loopback DN, the call would get forwarded to the voicemail.
+
+                1. Configure a dummy DN, which will serve as a Loopback DN. The DN would have the same extension as the original "ephone-dn", however it will have a lower preference and it would forward calls to the voicemail (300):
+                    
+                    ephone-dn 12                
+                    number 261                
+                    call-forward 300                
+                    loopback-dn 12                
+                    preference 2          
+                
+                2.This DN doesn’t need to be associated with an “ephone” profile. Once you do this configuration please do “create cnf-files” under “telephony-service”.                                
+
+
+                    """
+            T.insert(END, loopback_dn)
+
+
+        elif user_choice == "MGCP DTMF Issues":
+            mgcp_dtmf_issues = """
+
+            MGCP DTMF ISSUES  
+                
+                 
+                MGCP DTMF issues are most common when Jabber is involved in the call flow.
+                To resolve the issue try removing the following commands:
+                                               
+                    "no mgcp rtp payload-type g726r16 static"   
+                    "no mgcp dtmf-relay voip codec all mode out-of-band"
+                         
+                    
+                And add the following:
+                             
+                    "mgcp package-capability dtmf-package"
+                    "mgcp rtp payload-type nte 101"
+                    "mgcp dtmf-relay voip codec all mode nse"   
+
+
+                    """
+            T.insert(END, mgcp_dtmf_issues)
+
+        elif user_choice == "BRI Example Configuration":
+            bri_example = """
+
+            BRI EXAMPLE CONFIGURATION
+
+                interface BRI0/2/0
+                no ip address
+                encapsulation hdlc
+                isdn switch-type basic-ni  -->  We should match the switch-type that the provider requires from our end.
+                isdn point-to-point-setup
+                isdn incoming-voice voice
+                isdn static-tei 0  --> This is not always required – with this command we’re configuring a static ISDN Layer 2 terminal endpoint identifier (TEI) over the D channel.
+
+
+
+                    """
+            T.insert(END, bri_example)
+
+
+        elif user_choice == "Gateway Ringback":
+            gateway_ringback = """
+
+
+            FORCE GATEWAY TO PLAY RINGBACK 
+            
+            
+            The router should have DSP on board in order for the ringback to be generated.
+             
+                dial-peer voice 8680 pots
+                tone ringback alert-no-pi
+                
+                
+                Dial-peer voice 12 voip
+                Tone ringback alert-no-pi   
+
+
+
+
+                    """
+            T.insert(END, gateway_ringback)
+
+
+        elif user_choice == "Voice Class Tenant":
+            voice_tenant = """
+
+
+            VOICE CLASS TENANT - EXAPMLE CONFIGURATION
+            
+            
+                sip-ua
+                credentials username 9546608921 password 7 097B47071D1603000E0D09 realm 10.250.0.5
+                credentials username 9543551050 password 7 0636562A475D023329 realm wlr.nhcgrp.com
+                authentication username 9546608921 password 7 1079001701040619090527 realm 10.250.0.5
+                authentication username 9543551050 password 7 1139400E1C01002628
+                no remote-party-id
+                registrar 1 ipv4:10.250.0.5 expires 3600
+                registrar 2 dns:wlr.nhcgrp.com expires 3660
+                sip-server ipv4:10.250.0.5
+                 
+                =======================
+                
+                voice class tenant 1
+                  registrar 1 ipv4:10.250.0.5 expires 3600
+                  credentials username 9546608921 password 7 01240F0A5F18121D244D43 realm 10.250.0.5
+                  authentication username 9546608921 password 7 053C0F01255F5A1B1C041A realm 10.250.0.5
+                  timers buffer-invite 10000
+                  no pass-thru content custom-sdp
+                
+                
+                voice class tenant 2
+                  registrar 1 dns:wlr.nhcgrp.com expires 3660
+                  credentials username 9543551050 password 7 1139400E1C01002628 realm wlr.nhcgrp.com
+                  authentication username 9543551050 password 7 1139400E1C01002628
+                  timers buffer-invite 10000
+                  no pass-thru content custom-sdp
+                
+                
+                dial-peer voice 82 voip
+                translation-profile outgoing SIPoutgoing
+                preference 3
+                destination-pattern 9911
+                session protocol sipv2
+                session target ipv4:10.250.0.5
+                voice-class sip tenant 1
+                
+                
+                 
+                dial-peer voice 92 voip
+                translation-profile outgoing NHCSIPoutgoing
+                preference 4
+                destination-pattern 9911
+                session protocol sipv2
+                session target dns:wlr.nhcgrp.com
+                voice-class sip tenant 2
+                codec g711ulaw
+                no vad
+
+
+
+
+                    """
+            T.insert(END, voice_tenant)
+
+
+
 
 choices = ["SIP Trunk with CUCM", "Register SCCP Gateway in CUCM", "H323 Gateway (with CUCM)",
            "SIP CME", "SCCP CME",
@@ -2510,7 +2804,8 @@ choices = ["SIP Trunk with CUCM", "Register SCCP Gateway in CUCM", "H323 Gateway
            "Upgrade DSP Firmware", "Reset DSP", "Modem Passthrough with SIP, SCCP and MGCP Gateways",
            "EEM Script - Automatic Packet Capture When IP SLA goes down", "Voiceview express", "Fax Configuration",
            "Span port configuration on a switch", "LPCOR Configuration", "Extension Mobility for SIP and SCCP",
-           "Access List on a Switch for SRST"]
+           "Access List on a Switch for SRST", "cBarge Configuration", "Loopback-DN", "MGCP DTMF Issues",
+           "BRI Example Configuration", "Gateway Ringback", "Voice Class Tenant"]
 
 #CREATE A VARIABLE FOR THE TKINTER APP
 
